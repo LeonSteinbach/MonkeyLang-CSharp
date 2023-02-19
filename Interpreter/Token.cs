@@ -52,7 +52,7 @@
 
 	public class Token
 	{
-		private string Literal { get; set; }
+		public string Literal { get; set; }
 		public TokenType Type { get; set; }
 
 		public static Dictionary<string, TokenType> keywords = new()
@@ -89,7 +89,7 @@
 
 		public override string ToString()
 		{
-			return base.ToString() + ": " + Type + " | " + Literal;
+			return "{ Type: " + Type + ", Literal: " + Literal + " }";
 		}
 	}
 }
