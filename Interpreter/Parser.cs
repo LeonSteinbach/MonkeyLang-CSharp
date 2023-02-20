@@ -7,12 +7,26 @@
 		private Token PeekToken { get; set; }
 		public List<string> Errors { get; set; }
 
+		public Dictionary<TokenType, Delegate> PrefixParseFunctions;
+		public Dictionary<TokenType, Delegate> InfixParseFunctions;
+
 		public Parser(Lexer lexer)
 		{
 			Lexer = lexer;
 			Errors = new List<string>();
 
+			PrefixParseFunctions = new Dictionary<TokenType, Delegate>();
+			InfixParseFunctions = new Dictionary<TokenType, Delegate>();
+
+			RegisterParseFunctions();
+
 			AdvanceTokens();
+		}
+
+		private void RegisterParseFunctions()
+		{
+			RegisterPrefix(TokenType.IDENT, ParseIdentifier);
+			RegisterPrefix(TokenType.INT, ParseIntegerLiteral);
 		}
 
 		public static void PrintProgram(Program program)
@@ -23,6 +37,21 @@
 		private void PeekError(TokenType tokenType)
 		{
 			Errors.Add($"Expected next token to be {tokenType}, got {PeekToken.Type} instead.");
+		}
+
+		private void IntegerParseError(string integer)
+		{
+			Errors.Add($"Could not parse {integer} as integer.");
+		}
+
+		private void RegisterPrefix(TokenType tokenType, Delegate prefixParseFunction)
+		{
+			PrefixParseFunctions[tokenType] = prefixParseFunction;
+		}
+
+		private void RegisterInfix(TokenType tokenType, Delegate infixParseFunction)
+		{
+			InfixParseFunctions[tokenType] = infixParseFunction;
 		}
 
 		private void AdvanceTokens()
@@ -52,7 +81,7 @@
 			{
 				TokenType.LET => ParseLetStatement(),
 				TokenType.RETURN => ParseReturnStatement(),
-				_ => null
+				_ => ParseExpressionStatement()
 			};
 		}
 
@@ -68,9 +97,10 @@
 			if (ExpectPeek(TokenType.ASSIGN) == false)
 				return null;
 
-			// TODO: Parse expressions
+			AdvanceTokens();
+			letStatement.Value = ParseExpression(Precedence.LOWEST);
 
-			while (CurrentToken.Type != TokenType.SEMICOLON)
+			if (CurrentToken.Type == TokenType.SEMICOLON)
 				AdvanceTokens();
 
 			return letStatement;
@@ -81,13 +111,54 @@
 			ReturnStatement returnStatement = new ReturnStatement { Token = CurrentToken };
 
 			AdvanceTokens();
-
-			// TODO: Parse expressions
+			returnStatement.ReturnValue = ParseExpression(Precedence.LOWEST);
 
 			while (CurrentToken.Type != TokenType.SEMICOLON)
 				AdvanceTokens();
 
 			return returnStatement;
+		}
+
+		private ExpressionStatement ParseExpressionStatement()
+		{
+			ExpressionStatement expressionStatement = new ExpressionStatement { Token = CurrentToken };
+
+			expressionStatement.Expression = ParseExpression(Precedence.LOWEST);
+
+			if (PeekToken.Type == TokenType.SEMICOLON)
+				AdvanceTokens();
+
+			return expressionStatement;
+		}
+
+		private Expression ParseExpression(Precedence precedence)
+		{
+			Delegate prefix = PrefixParseFunctions[CurrentToken.Type];
+			if (prefix == null)
+				return null;
+
+			Expression leftExpression = (Expression)prefix.DynamicInvoke();
+			return leftExpression;
+		}
+
+		private Expression ParseIdentifier()
+		{
+			return new Identifier { Token = CurrentToken, Value = CurrentToken.Literal };
+		}
+
+		private Expression ParseIntegerLiteral()
+		{
+			IntegerLiteral integerLiteral = new IntegerLiteral { Token = CurrentToken };
+			int value;
+			bool error = int.TryParse(CurrentToken.Literal, out value);
+			if (error == false)
+			{
+				IntegerParseError(CurrentToken.Literal);
+				return null;
+			}
+
+			integerLiteral.Value = value;
+			return integerLiteral;
 		}
 
 		private bool ExpectPeek(TokenType tokenType)
@@ -108,5 +179,16 @@
 		public ParserException() {}
 		public ParserException(string message) : base(message) {}
 		public ParserException(string message, Exception inner) : base(message, inner) {}
+	}
+
+	public enum Precedence
+	{
+		LOWEST,
+		EQUALS,
+		LESSGREATER,
+		SUM,
+		PRODUCT,
+		PREFIX,
+		CALL
 	}
 }

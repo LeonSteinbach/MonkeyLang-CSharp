@@ -4,7 +4,8 @@
 	{
 		public static int Main(String[] args)
 		{
-			string text = "let x = 1; return 5;";
+			string text = "let a = 123 " +
+			              "let b = asdf";
 
 			/*
 			Lexer lexer = new Lexer(text);
