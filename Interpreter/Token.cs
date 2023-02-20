@@ -79,7 +79,7 @@
 
 		public static bool operator ==(Token token1, Token token2)
 		{
-			return token1.Type == token2.Type && token1.Literal == token2.Literal;
+			return (token1 is null && token2 is null) || (!(token1 is null) && !(token2 is null) && token1.Type == token2.Type && token1.Literal == token2.Literal);
 		}
 
 		public static bool operator !=(Token token1, Token token2)

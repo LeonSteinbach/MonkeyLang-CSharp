@@ -4,7 +4,7 @@
 	{
 		public static int Main(String[] args)
 		{
-			string text = "let three = 1 + 2; let a = 1; let b = 0;";
+			string text = "let x = 1; return 5;";
 
 			/*
 			Lexer lexer = new Lexer(text);
@@ -22,6 +22,9 @@
 
 			Program program = parser.ParseProgram();
 			Parser.PrintProgram(program);
+
+			foreach (string error in parser.Errors)
+				Console.WriteLine(error);
 
 			Console.ReadKey();
 

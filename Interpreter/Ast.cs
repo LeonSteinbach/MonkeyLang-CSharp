@@ -5,15 +5,9 @@
 		public string TokenLiteral();
 	}
 
-	public interface Statement : Node
-	{
-		public Node? StatementNode();
-	}
+	public interface Statement : Node {}
 
-	public interface Expression : Node
-	{
-		public Node? ExpressionNode();
-	}
+	public interface Expression : Node {}
 
 	public class Program : Node
 	{
@@ -35,11 +29,6 @@
 		public Token Token { get; set; }
 		public string Value { get; set; }
 
-		public Node? ExpressionNode()
-		{
-			return null;
-		}
-
 		public string TokenLiteral()
 		{
 			return Token.Literal;
@@ -52,10 +41,16 @@
 		public Identifier Name { get; set; }
 		public Expression Value { get; set; }
 
-		public Node? StatementNode()
+		public string TokenLiteral()
 		{
-			return null;
+			return Token.Literal;
 		}
+	}
+
+	public class ReturnStatement : Statement
+	{
+		public Token Token { get; set; }
+		public Expression ReturnValue { get; set; }
 
 		public string TokenLiteral()
 		{

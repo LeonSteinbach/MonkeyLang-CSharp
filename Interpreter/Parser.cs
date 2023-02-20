@@ -5,10 +5,12 @@
 		public Lexer Lexer { get; set; }
 		private Token CurrentToken { get; set; }
 		private Token PeekToken { get; set; }
+		public List<string> Errors { get; set; }
 
 		public Parser(Lexer lexer)
 		{
 			Lexer = lexer;
+			Errors = new List<string>();
 
 			AdvanceTokens();
 		}
@@ -27,13 +29,22 @@
 
 		private static void PrintNode(Node node, int level, bool nextTokenExists)
 		{
-			if (node is LetStatement)
+			if (node is LetStatement letStatement)
 			{
-				PrintIndented(node.GetType().Name + ": {", level);
-				PrintIndented("type: " + ((LetStatement)node).Token.Type, level + 1);
-				PrintIndented("name: " + ((LetStatement)node).Name.Value, level + 1);
+				PrintIndented(letStatement.GetType().Name + ": {", level);
+				PrintIndented("type: " + letStatement.Token.Type, level + 1);
+				PrintIndented("name: " + letStatement.Name.Value, level + 1);
 				PrintIndented("value: {", level + 1);
-				PrintNode(((LetStatement)node).Value, level + 2, false);
+				PrintNode(letStatement.Value, level + 2, false);
+				PrintIndented("}", level + 1);
+				PrintIndented(nextTokenExists ? "}," : "}", level);
+			}
+			else if (node is ReturnStatement returnStatement)
+			{
+				PrintIndented(returnStatement.GetType().Name + ": {", level);
+				PrintIndented("type: " + returnStatement.Token.Type, level + 1);
+				PrintIndented("value: {", level + 1);
+				PrintNode(returnStatement.ReturnValue, level + 2, false);
 				PrintIndented("}", level + 1);
 				PrintIndented(nextTokenExists ? "}," : "}", level);
 			}
@@ -49,9 +60,9 @@
 				Console.WriteLine();
 		}
 
-		private void ParseError(string message)
+		private void PeekError(TokenType tokenType)
 		{
-			throw new ParserException(message);
+			Errors.Add($"Expected next token to be {tokenType}, got {PeekToken.Type} instead.");
 		}
 
 		private void AdvanceTokens()
@@ -67,7 +78,7 @@
 
 			while (CurrentToken.Type != TokenType.EOF)
 			{
-				Statement statement = ParseStatement();
+				Statement? statement = ParseStatement();
 				if (statement != null)
 					program.Statements.Add(statement);
 				AdvanceTokens();
@@ -75,11 +86,13 @@
 			return program;
 		}
 
-		private Statement ParseStatement()
+		private Statement? ParseStatement()
 		{
 			return CurrentToken.Type switch
 			{
 				TokenType.LET => ParseLetStatement(),
+				TokenType.RETURN => ParseReturnStatement(),
+				_ => null
 			};
 		}
 
@@ -103,6 +116,20 @@
 			return letStatement;
 		}
 
+		private ReturnStatement ParseReturnStatement()
+		{
+			ReturnStatement returnStatement = new ReturnStatement { Token = CurrentToken };
+
+			AdvanceTokens();
+
+			// TODO: Parse expressions
+
+			while (CurrentToken.Type != TokenType.SEMICOLON)
+				AdvanceTokens();
+
+			return returnStatement;
+		}
+
 		private bool ExpectPeek(TokenType tokenType)
 		{
 			if (PeekToken.Type == tokenType)
@@ -111,6 +138,7 @@
 				return true;
 			}
 
+			PeekError(tokenType);
 			return false;
 		}
 	}
