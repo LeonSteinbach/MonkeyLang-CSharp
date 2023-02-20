@@ -27,6 +27,8 @@
 		{
 			RegisterPrefix(TokenType.IDENT, ParseIdentifier);
 			RegisterPrefix(TokenType.INT, ParseIntegerLiteral);
+			RegisterPrefix(TokenType.BANG, ParsePrefixExpression);
+			RegisterPrefix(TokenType.MINUS, ParsePrefixExpression);
 		}
 
 		public static void PrintProgram(Program program)
@@ -42,6 +44,11 @@
 		private void IntegerParseError(string integer)
 		{
 			Errors.Add($"Could not parse {integer} as integer.");
+		}
+
+		private void NoPrefixParseFunctionError(TokenType tokenType)
+		{
+			Errors.Add($"No prefix parse function for {tokenType}.");
 		}
 
 		private void RegisterPrefix(TokenType tokenType, Delegate prefixParseFunction)
@@ -133,9 +140,13 @@
 
 		private Expression ParseExpression(Precedence precedence)
 		{
-			Delegate prefix = PrefixParseFunctions[CurrentToken.Type];
-			if (prefix == null)
+			if (PrefixParseFunctions.ContainsKey(CurrentToken.Type) == false)
+			{
+				NoPrefixParseFunctionError(CurrentToken.Type);
 				return null;
+			}
+
+			Delegate prefix = PrefixParseFunctions[CurrentToken.Type];
 
 			Expression leftExpression = (Expression)prefix.DynamicInvoke();
 			return leftExpression;
@@ -159,6 +170,16 @@
 
 			integerLiteral.Value = value;
 			return integerLiteral;
+		}
+
+		private Expression ParsePrefixExpression()
+		{
+			PrefixExpression prefixExpression = new PrefixExpression {Token = CurrentToken, Operator = CurrentToken.Literal};
+
+			AdvanceTokens();
+			prefixExpression.RightExpression = ParseExpression(Precedence.PREFIX);
+
+			return prefixExpression;
 		}
 
 		private bool ExpectPeek(TokenType tokenType)

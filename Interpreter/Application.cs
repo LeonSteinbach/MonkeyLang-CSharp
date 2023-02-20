@@ -4,8 +4,8 @@
 	{
 		public static int Main(String[] args)
 		{
-			string text = "let a = 123 " +
-			              "let b = asdf";
+			string text = "let a = !123 " +
+			              "let b = -asdf";
 
 			/*
 			Lexer lexer = new Lexer(text);

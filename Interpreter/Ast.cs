@@ -1,4 +1,6 @@
-﻿namespace Interpreter
+﻿using System.Xml.Linq;
+
+namespace Interpreter
 {
 	public interface Node
 	{
@@ -50,8 +52,7 @@
 		{
 			string result = string.Empty;
 
-			result += Util.GetIndentedNodeString(GetType().Name + ": {", level);
-			result += Util.GetIndentedNodeString("type: " + Token.Type, level + 1);
+			result += Util.GetIndentedNodeString(Token.Type + ": {", level);
 			result += Util.GetIndentedNodeString("value: " + Value, level + 1);
 			result += Util.GetIndentedNodeString(nextTokenExists ? "}," : "}", level);
 
@@ -73,9 +74,34 @@
 		{
 			string result = string.Empty;
 
-			result += Util.GetIndentedNodeString(GetType().Name + ": {", level);
-			result += Util.GetIndentedNodeString("type: " + Token.Type, level + 1);
+			result += Util.GetIndentedNodeString(Token.Type + ": {", level);
 			result += Util.GetIndentedNodeString("value: " + Value, level + 1);
+			result += Util.GetIndentedNodeString(nextTokenExists ? "}," : "}", level);
+
+			return result;
+		}
+	}
+
+	public class PrefixExpression : Expression
+	{
+		public Token Token { get; set; }
+		public string Operator { get; set; }
+		public Expression RightExpression { get; set; }
+
+		public string TokenLiteral()
+		{
+			return Token.Literal;
+		}
+
+		public string String(int level, bool nextTokenExists)
+		{
+			string result = string.Empty;
+
+			result += Util.GetIndentedNodeString(Token.Type + ": {", level);
+			result += Util.GetIndentedNodeString("operator: " + Operator, level + 1);
+			result += Util.GetIndentedNodeString("right-expression: {", level + 1);
+			result += RightExpression?.String(level + 2, nextTokenExists);
+			result += Util.GetIndentedNodeString("}", level + 1);
 			result += Util.GetIndentedNodeString(nextTokenExists ? "}," : "}", level);
 
 			return result;
@@ -97,8 +123,7 @@
 		{
 			string result = string.Empty;
 
-			result += Util.GetIndentedNodeString(GetType().Name + ": {", level);
-			result += Util.GetIndentedNodeString("type: " + Token.Type, level + 1);
+			result += Util.GetIndentedNodeString(Token.Type + ": {", level);
 			result += Util.GetIndentedNodeString("name: " + Name.Value, level + 1);
 			result += Util.GetIndentedNodeString("value: {", level + 1);
 			result += Value?.String(level + 2, nextTokenExists);
@@ -123,8 +148,7 @@
 		{
 			string result = string.Empty;
 
-			result += Util.GetIndentedNodeString(GetType().Name + ": {", level);
-			result += Util.GetIndentedNodeString("type: " + Token.Type, level + 1);
+			result += Util.GetIndentedNodeString(Token.Type + ": {", level);
 			result += Util.GetIndentedNodeString("value: {", level + 1);
 			result += ReturnValue?.String(level + 2, nextTokenExists);
 			result += Util.GetIndentedNodeString("}", level + 1);
@@ -148,8 +172,7 @@
 		{
 			string result = string.Empty;
 
-			result += Util.GetIndentedNodeString(GetType().Name + ": {", level);
-			result += Util.GetIndentedNodeString("type: " + Token.Type, level + 1);
+			result += Util.GetIndentedNodeString(Token.Type + ": {", level);
 			result += Util.GetIndentedNodeString("value: {", level + 1);
 			result += Expression?.String(level + 2, nextTokenExists);
 			result += Util.GetIndentedNodeString("}", level + 1);
