@@ -6,7 +6,8 @@ namespace Interpreter
 	{
 		public static int Main(String[] args)
 		{
-			string text = "let a = 1;";
+			string text = "let a = (1 + 2) * 3 " +
+			              "let a = 1 + 2 * 3";
 
 			/*
 			Lexer lexer = new Lexer(text);

@@ -48,6 +48,7 @@
 			RegisterPrefix(TokenType.FALSE, ParseBoolean);
 			RegisterPrefix(TokenType.BANG, ParsePrefixExpression);
 			RegisterPrefix(TokenType.MINUS, ParsePrefixExpression);
+			RegisterPrefix(TokenType.LPAREN, ParseGroupedExpression);
 
 			RegisterInfix(TokenType.PLUS, ParseInfixExpression);
 			RegisterInfix(TokenType.MINUS, ParseInfixExpression);
@@ -217,6 +218,15 @@
 		private Boolean ParseBoolean()
 		{
 			return new Boolean { Token = CurrentToken, Value = CurrentToken.Type == TokenType.TRUE };
+		}
+
+		private Expression ParseGroupedExpression()
+		{
+			AdvanceTokens();
+			Expression expression = ParseExpression(Precedence.LOWEST);
+			if (ExpectPeek(TokenType.RPAREN) == false)
+				return null;
+			return expression;
 		}
 
 		private PrefixExpression ParsePrefixExpression()
