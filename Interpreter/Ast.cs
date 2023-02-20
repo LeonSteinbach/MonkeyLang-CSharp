@@ -52,7 +52,8 @@ namespace Interpreter
 		{
 			string result = string.Empty;
 
-			result += Util.GetIndentedNodeString(Token.Type + ": {", level);
+			result += Util.GetIndentedNodeString(GetType().Name + ": {", level);
+			result += Util.GetIndentedNodeString("type: " + Token.Type + ",", level + 1);
 			result += Util.GetIndentedNodeString("value: " + Value, level + 1);
 			result += Util.GetIndentedNodeString(nextTokenExists ? "}," : "}", level);
 
@@ -74,7 +75,8 @@ namespace Interpreter
 		{
 			string result = string.Empty;
 
-			result += Util.GetIndentedNodeString(Token.Type + ": {", level);
+			result += Util.GetIndentedNodeString(GetType().Name + ": {", level);
+			result += Util.GetIndentedNodeString("type: " + Token.Type + ",", level + 1);
 			result += Util.GetIndentedNodeString("value: " + Value, level + 1);
 			result += Util.GetIndentedNodeString(nextTokenExists ? "}," : "}", level);
 
@@ -97,7 +99,8 @@ namespace Interpreter
 		{
 			string result = string.Empty;
 
-			result += Util.GetIndentedNodeString(Token.Type + ": {", level);
+			result += Util.GetIndentedNodeString(GetType().Name + ": {", level);
+			result += Util.GetIndentedNodeString("type: " + Token.Type + ",", level + 1);
 			result += Util.GetIndentedNodeString("operator: " + Operator + ",", level + 1);
 			result += Util.GetIndentedNodeString("right-expression: {", level + 1);
 			result += RightExpression?.String(level + 2, nextTokenExists);
@@ -124,7 +127,8 @@ namespace Interpreter
 		{
 			string result = string.Empty;
 
-			result += Util.GetIndentedNodeString(Token.Type + ": {", level);
+			result += Util.GetIndentedNodeString(GetType().Name + ": {", level);
+			result += Util.GetIndentedNodeString("type: " + Token.Type + ",", level + 1);
 			result += Util.GetIndentedNodeString("operator: " + Operator + ",", level + 1);
 			result += Util.GetIndentedNodeString("left-expression: {", level + 1);
 			result += LeftExpression?.String(level + 2, nextTokenExists);
@@ -153,8 +157,11 @@ namespace Interpreter
 		{
 			string result = string.Empty;
 
-			result += Util.GetIndentedNodeString(Token.Type + ": {", level);
-			result += Util.GetIndentedNodeString("name: " + Name.Value + ",", level + 1);
+			result += Util.GetIndentedNodeString(GetType().Name + ": {", level);
+			result += Util.GetIndentedNodeString("type: " + Token.Type + ",", level + 1);
+			result += Util.GetIndentedNodeString("name: {", level + 1);
+			result += Name?.String(level + 2, nextTokenExists);
+			result += Util.GetIndentedNodeString("}", level + 1);
 			result += Util.GetIndentedNodeString("value: {", level + 1);
 			result += Value?.String(level + 2, nextTokenExists);
 			result += Util.GetIndentedNodeString("}", level + 1);
@@ -178,7 +185,8 @@ namespace Interpreter
 		{
 			string result = string.Empty;
 
-			result += Util.GetIndentedNodeString(Token.Type + ": {", level);
+			result += Util.GetIndentedNodeString(GetType().Name + ": {", level);
+			result += Util.GetIndentedNodeString("type: " + Token.Type + ",", level + 1);
 			result += Util.GetIndentedNodeString("value: {", level + 1);
 			result += ReturnValue?.String(level + 2, nextTokenExists);
 			result += Util.GetIndentedNodeString("}", level + 1);
@@ -202,7 +210,8 @@ namespace Interpreter
 		{
 			string result = string.Empty;
 
-			result += Util.GetIndentedNodeString(Token.Type + ": {", level);
+			result += Util.GetIndentedNodeString(GetType().Name + ": {", level);
+			result += Util.GetIndentedNodeString("type: " + Token.Type + ",", level + 1);
 			result += Util.GetIndentedNodeString("value: {", level + 1);
 			result += Expression?.String(level + 2, nextTokenExists);
 			result += Util.GetIndentedNodeString("}", level + 1);

@@ -4,7 +4,7 @@
 	{
 		public static int Main(String[] args)
 		{
-			string text = "a + -b * c";
+			string text = "let asdf = a + -b * c";
 
 			/*
 			Lexer lexer = new Lexer(text);
