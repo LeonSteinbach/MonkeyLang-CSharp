@@ -84,6 +84,29 @@ namespace Interpreter
 		}
 	}
 
+	public class Boolean : Expression
+	{
+		public Token Token { get; set; }
+		public bool Value { get; set; }
+
+		public string TokenLiteral()
+		{
+			return Token.Literal;
+		}
+
+		public string String(int level, bool nextTokenExists)
+		{
+			string result = string.Empty;
+
+			result += Util.GetIndentedNodeString(GetType().Name + ": {", level);
+			result += Util.GetIndentedNodeString("type: " + Token.Type + ",", level + 1);
+			result += Util.GetIndentedNodeString("value: " + Value, level + 1);
+			result += Util.GetIndentedNodeString(nextTokenExists ? "}," : "}", level);
+
+			return result;
+		}
+	}
+
 	public class PrefixExpression : Expression
 	{
 		public Token Token { get; set; }
@@ -161,7 +184,7 @@ namespace Interpreter
 			result += Util.GetIndentedNodeString("type: " + Token.Type + ",", level + 1);
 			result += Util.GetIndentedNodeString("name: {", level + 1);
 			result += Name?.String(level + 2, nextTokenExists);
-			result += Util.GetIndentedNodeString("}", level + 1);
+			result += Util.GetIndentedNodeString("},", level + 1);
 			result += Util.GetIndentedNodeString("value: {", level + 1);
 			result += Value?.String(level + 2, nextTokenExists);
 			result += Util.GetIndentedNodeString("}", level + 1);

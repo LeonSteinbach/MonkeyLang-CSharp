@@ -43,9 +43,9 @@
 		private void RegisterParseFunctions()
 		{
 			RegisterPrefix(TokenType.IDENT, ParseIdentifier);
-
 			RegisterPrefix(TokenType.INT, ParseIntegerLiteral);
-
+			RegisterPrefix(TokenType.TRUE, ParseBoolean);
+			RegisterPrefix(TokenType.FALSE, ParseBoolean);
 			RegisterPrefix(TokenType.BANG, ParsePrefixExpression);
 			RegisterPrefix(TokenType.MINUS, ParsePrefixExpression);
 
@@ -120,9 +120,9 @@
 			};
 		}
 
-		private LetStatement ParseLetStatement()
+		private LetStatement? ParseLetStatement()
 		{
-			LetStatement letStatement = new LetStatement { Token = CurrentToken };
+			LetStatement? letStatement = new LetStatement { Token = CurrentToken };
 
 			if (ExpectPeek(TokenType.IDENT) == false)
 				return null;
@@ -212,6 +212,11 @@
 
 			integerLiteral.Value = value;
 			return integerLiteral;
+		}
+
+		private Boolean ParseBoolean()
+		{
+			return new Boolean { Token = CurrentToken, Value = CurrentToken.Type == TokenType.TRUE };
 		}
 
 		private PrefixExpression ParsePrefixExpression()
