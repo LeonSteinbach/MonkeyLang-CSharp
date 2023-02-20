@@ -4,8 +4,7 @@
 	{
 		public static int Main(String[] args)
 		{
-			string text = "let a = !123 " +
-			              "let b = -asdf";
+			string text = "a + -b * c";
 
 			/*
 			Lexer lexer = new Lexer(text);
@@ -22,6 +21,7 @@
 			Parser parser = new Parser(lexer);
 
 			Program program = parser.ParseProgram();
+			Console.WriteLine();
 			Parser.PrintProgram(program);
 
 			foreach (string error in parser.Errors)

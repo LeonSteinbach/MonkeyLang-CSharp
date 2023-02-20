@@ -98,7 +98,37 @@ namespace Interpreter
 			string result = string.Empty;
 
 			result += Util.GetIndentedNodeString(Token.Type + ": {", level);
-			result += Util.GetIndentedNodeString("operator: " + Operator, level + 1);
+			result += Util.GetIndentedNodeString("operator: " + Operator + ",", level + 1);
+			result += Util.GetIndentedNodeString("right-expression: {", level + 1);
+			result += RightExpression?.String(level + 2, nextTokenExists);
+			result += Util.GetIndentedNodeString("}", level + 1);
+			result += Util.GetIndentedNodeString(nextTokenExists ? "}," : "}", level);
+
+			return result;
+		}
+	}
+
+	public class InfixExpression : Expression
+	{
+		public Token Token { get; set; }
+		public string Operator { get; set; }
+		public Expression LeftExpression { get; set; }
+		public Expression RightExpression { get; set; }
+
+		public string TokenLiteral()
+		{
+			return Token.Literal;
+		}
+
+		public string String(int level, bool nextTokenExists)
+		{
+			string result = string.Empty;
+
+			result += Util.GetIndentedNodeString(Token.Type + ": {", level);
+			result += Util.GetIndentedNodeString("operator: " + Operator + ",", level + 1);
+			result += Util.GetIndentedNodeString("left-expression: {", level + 1);
+			result += LeftExpression?.String(level + 2, nextTokenExists);
+			result += Util.GetIndentedNodeString("},", level + 1);
 			result += Util.GetIndentedNodeString("right-expression: {", level + 1);
 			result += RightExpression?.String(level + 2, nextTokenExists);
 			result += Util.GetIndentedNodeString("}", level + 1);
@@ -124,7 +154,7 @@ namespace Interpreter
 			string result = string.Empty;
 
 			result += Util.GetIndentedNodeString(Token.Type + ": {", level);
-			result += Util.GetIndentedNodeString("name: " + Name.Value, level + 1);
+			result += Util.GetIndentedNodeString("name: " + Name.Value + ",", level + 1);
 			result += Util.GetIndentedNodeString("value: {", level + 1);
 			result += Value?.String(level + 2, nextTokenExists);
 			result += Util.GetIndentedNodeString("}", level + 1);
