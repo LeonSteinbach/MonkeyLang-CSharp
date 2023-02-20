@@ -165,6 +165,64 @@ namespace Interpreter
 		}
 	}
 
+	public class IfExpression : Expression
+	{
+		public Token Token { get; set; }
+		public Expression Condition { get; set; }
+		public BlockStatement Consequence { get; set; }
+		public BlockStatement Alternative { get; set; }
+
+		public string TokenLiteral()
+		{
+			return Token.Literal;
+		}
+
+		public string String(int level, bool nextTokenExists)
+		{
+			string result = string.Empty;
+
+			result += Util.GetIndentedNodeString(GetType().Name + ": {", level);
+			result += Util.GetIndentedNodeString("type: " + Token.Type + ",", level + 1);
+			result += Util.GetIndentedNodeString("condition: {", level + 1);
+			result += Condition?.String(level + 2, nextTokenExists);
+			result += Util.GetIndentedNodeString("},", level + 1);
+			result += Util.GetIndentedNodeString("consequence: {", level + 1);
+			result += Consequence?.String(level + 2, nextTokenExists);
+			result += Util.GetIndentedNodeString("},", level + 1);
+			result += Util.GetIndentedNodeString("alternative: {", level + 1);
+			result += Alternative?.String(level + 2, nextTokenExists);
+			result += Util.GetIndentedNodeString("}", level + 1);
+			result += Util.GetIndentedNodeString(nextTokenExists ? "}," : "}", level);
+
+			return result;
+		}
+	}
+
+	public class BlockStatement : Statement
+	{
+		public Token Token { get; set; }
+		public List<Statement> Statements { get; set; }
+
+		public string TokenLiteral()
+		{
+			return Token.Literal;
+		}
+
+		public string String(int level, bool nextTokenExists)
+		{
+			string result = string.Empty;
+
+			result += Util.GetIndentedNodeString(GetType().Name + ": {", level);
+			for (int i = 0; i < Statements.Count; i++)
+			{
+				result += Statements[i].String(level + 1, i < Statements.Count - 1);
+			}
+			result += Util.GetIndentedNodeString(nextTokenExists ? "}," : "}", level);
+
+			return result;
+		}
+	}
+
 	public class LetStatement : Statement
 	{
 		public Token Token { get; set; }

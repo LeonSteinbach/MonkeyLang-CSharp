@@ -49,6 +49,7 @@
 			RegisterPrefix(TokenType.BANG, ParsePrefixExpression);
 			RegisterPrefix(TokenType.MINUS, ParsePrefixExpression);
 			RegisterPrefix(TokenType.LPAREN, ParseGroupedExpression);
+			RegisterPrefix(TokenType.IF, ParseIfExpression);
 
 			RegisterInfix(TokenType.PLUS, ParseInfixExpression);
 			RegisterInfix(TokenType.MINUS, ParseInfixExpression);
@@ -227,6 +228,54 @@
 			if (ExpectPeek(TokenType.RPAREN) == false)
 				return null;
 			return expression;
+		}
+
+		private IfExpression ParseIfExpression()
+		{
+			IfExpression ifExpression = new IfExpression { Token = CurrentToken };
+
+			if (ExpectPeek(TokenType.LPAREN) == false)
+				return null;
+
+			AdvanceTokens();
+			ifExpression.Condition = ParseExpression(Precedence.LOWEST);
+
+			if (ExpectPeek(TokenType.RPAREN) == false)
+				return null;
+
+			if (ExpectPeek(TokenType.LBRACE) == false)
+				return null;
+
+			ifExpression.Consequence = ParseBlockStatement();
+
+			if (PeekToken.Type == TokenType.ELSE)
+			{
+				AdvanceTokens();
+
+				if (ExpectPeek(TokenType.LBRACE) == false)
+					return null;
+
+				ifExpression.Alternative = ParseBlockStatement();
+			}
+
+			return ifExpression;
+		}
+
+		private BlockStatement ParseBlockStatement()
+		{
+			BlockStatement blockStatement = new BlockStatement { Token = CurrentToken, Statements = new List<Statement>() };
+
+			AdvanceTokens();
+
+			while (CurrentToken.Type != TokenType.RBRACE && CurrentToken.Type != TokenType.EOF)
+			{
+				Statement statement = ParseStatement();
+				if (statement != null)
+					blockStatement.Statements.Add(statement);
+				AdvanceTokens();
+			}
+
+			return blockStatement;
 		}
 
 		private PrefixExpression ParsePrefixExpression()
