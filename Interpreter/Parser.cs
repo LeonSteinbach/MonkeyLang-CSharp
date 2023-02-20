@@ -17,47 +17,7 @@
 
 		public static void PrintProgram(Program program)
 		{
-			Console.WriteLine("{");
-
-			for (int i = 0; i < program.Statements.Count; i++)
-			{
-				PrintNode(program.Statements[i], 1, i < program.Statements.Count - 1);
-			}
-
-			Console.WriteLine("}");
-		}
-
-		private static void PrintNode(Node node, int level, bool nextTokenExists)
-		{
-			if (node is LetStatement letStatement)
-			{
-				PrintIndented(letStatement.GetType().Name + ": {", level);
-				PrintIndented("type: " + letStatement.Token.Type, level + 1);
-				PrintIndented("name: " + letStatement.Name.Value, level + 1);
-				PrintIndented("value: {", level + 1);
-				PrintNode(letStatement.Value, level + 2, false);
-				PrintIndented("}", level + 1);
-				PrintIndented(nextTokenExists ? "}," : "}", level);
-			}
-			else if (node is ReturnStatement returnStatement)
-			{
-				PrintIndented(returnStatement.GetType().Name + ": {", level);
-				PrintIndented("type: " + returnStatement.Token.Type, level + 1);
-				PrintIndented("value: {", level + 1);
-				PrintNode(returnStatement.ReturnValue, level + 2, false);
-				PrintIndented("}", level + 1);
-				PrintIndented(nextTokenExists ? "}," : "}", level);
-			}
-		}
-
-		private static void PrintIndented(string text, int level, bool newLine = true)
-		{
-			for (int i = 0; i < level; i++)
-				Console.Write("  ");
-			Console.Write(text);
-
-			if (newLine)
-				Console.WriteLine();
+			Console.WriteLine(program.String(0, program.Statements.Count > 1));
 		}
 
 		private void PeekError(TokenType tokenType)

@@ -3,6 +3,7 @@
 	public interface Node
 	{
 		public string TokenLiteral();
+		public string String(int level, bool nextTokenExists);
 	}
 
 	public interface Statement : Node {}
@@ -22,6 +23,17 @@
 		{
 			return Statements.Count > 0 ? Statements[0].TokenLiteral() : string.Empty;
 		}
+
+		public string String(int level, bool nextTokenExists)
+		{
+			string result = Util.GetIndentedNodeString("{", 0);
+			for (int i = 0; i < Statements.Count; i++)
+			{
+				result += Statements[i].String(1, i < Statements.Count - 1);
+			}
+			result += Util.GetIndentedNodeString("}", 0);
+			return result;
+		}
 	}
 
 	public class Identifier : Expression
@@ -32,6 +44,11 @@
 		public string TokenLiteral()
 		{
 			return Token.Literal;
+		}
+
+		public string String(int level, bool nextTokenExists)
+		{
+			return string.Empty;
 		}
 	}
 
@@ -45,6 +62,21 @@
 		{
 			return Token.Literal;
 		}
+
+		public string String(int level, bool nextTokenExists)
+		{
+			string result = string.Empty;
+
+			result += Util.GetIndentedNodeString(GetType().Name + ": {", level);
+			result += Util.GetIndentedNodeString("type: " + Token.Type, level + 1);
+			result += Util.GetIndentedNodeString("name: " + Name.Value, level + 1);
+			result += Util.GetIndentedNodeString("value: {", level + 1);
+			result += Value?.String(level + 2, nextTokenExists);
+			result += Util.GetIndentedNodeString("}", level + 1);
+			result += Util.GetIndentedNodeString(nextTokenExists ? "}," : "}", level);
+
+			return result;
+		}
 	}
 
 	public class ReturnStatement : Statement
@@ -55,6 +87,36 @@
 		public string TokenLiteral()
 		{
 			return Token.Literal;
+		}
+
+		public string String(int level, bool nextTokenExists)
+		{
+			string result = string.Empty;
+
+			result += Util.GetIndentedNodeString(GetType().Name + ": {", level);
+			result += Util.GetIndentedNodeString("type: " + Token.Type, level + 1);
+			result += Util.GetIndentedNodeString("value: {", level + 1);
+			result += ReturnValue?.String(level + 2, nextTokenExists);
+			result += Util.GetIndentedNodeString("}", level + 1);
+			result += Util.GetIndentedNodeString(nextTokenExists ? "}," : "}", level);
+
+			return result;
+		}
+	}
+
+	public class ExpressionStatement : Statement
+	{
+		public Token Token { get; set; }
+		public Expression Expression { get; set; }
+
+		public string TokenLiteral()
+		{
+			return Token.Literal;
+		}
+
+		public string String(int level, bool nextTokenExists)
+		{
+			return string.Empty;
 		}
 	}
 }
