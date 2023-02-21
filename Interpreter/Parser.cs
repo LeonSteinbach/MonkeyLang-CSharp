@@ -154,7 +154,7 @@
 			AdvanceTokens();
 			returnStatement.ReturnValue = ParseExpression(Precedence.LOWEST);
 
-			while (CurrentToken.Type != TokenType.SEMICOLON)
+			if (PeekToken.Type == TokenType.SEMICOLON)
 				AdvanceTokens();
 
 			return returnStatement;
