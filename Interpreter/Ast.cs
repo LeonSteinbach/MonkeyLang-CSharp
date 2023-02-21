@@ -228,6 +228,38 @@
 		}
 	}
 
+	public class CallExpression : Expression
+	{
+		public Token Token { get; set; }
+		public Expression Function { get; set; }
+		public List<Expression> Arguments { get; set; }
+
+		public string TokenLiteral()
+		{
+			return Token.Literal;
+		}
+
+		public string String(int level, bool nextTokenExists)
+		{
+			string result = string.Empty;
+
+			result += Util.GetIndentedNodeString(GetType().Name + ": {", level);
+			result += Util.GetIndentedNodeString("type: " + Token.Type + ",", level + 1);
+			result += Util.GetIndentedNodeString("function: {", level + 1);
+			result += Function?.String(level + 2, nextTokenExists);
+			result += Util.GetIndentedNodeString("}", level + 1);
+			result += Util.GetIndentedNodeString("arguments: {", level + 1);
+			for (int i = 0; i < Arguments.Count; i++)
+			{
+				result += Arguments[i].String(level + 2, i < Arguments.Count - 1);
+			}
+			result += Util.GetIndentedNodeString("}", level + 1);
+			result += Util.GetIndentedNodeString(nextTokenExists ? "}," : "}", level);
+
+			return result;
+		}
+	}
+
 	public class BlockStatement : Statement
 	{
 		public Token Token { get; set; }

@@ -33,6 +33,7 @@
 				{TokenType.MINUS, Precedence.SUM},
 				{TokenType.SLASH, Precedence.PRODUCT},
 				{TokenType.ASTERIX, Precedence.PRODUCT},
+				{TokenType.LPAREN, Precedence.CALL},
 			};
 
 			RegisterParseFunctions();
@@ -51,6 +52,8 @@
 			RegisterPrefix(TokenType.LPAREN, ParseGroupedExpression);
 			RegisterPrefix(TokenType.IF, ParseIfExpression);
 			RegisterPrefix(TokenType.FUNCTION, ParseFunctionLiteral);
+
+			RegisterInfix(TokenType.LPAREN, ParseCallExpression);
 
 			RegisterInfix(TokenType.PLUS, ParseInfixExpression);
 			RegisterInfix(TokenType.MINUS, ParseInfixExpression);
@@ -203,7 +206,7 @@
 			return new Identifier { Token = CurrentToken, Value = CurrentToken.Literal };
 		}
 
-		private IntegerLiteral ParseIntegerLiteral()
+		private IntegerLiteral? ParseIntegerLiteral()
 		{
 			IntegerLiteral integerLiteral = new IntegerLiteral { Token = CurrentToken };
 			bool error = int.TryParse(CurrentToken.Literal, out int value);
@@ -258,7 +261,7 @@
 			return ifExpression;
 		}
 
-		private Expression ParseFunctionLiteral()
+		private Expression? ParseFunctionLiteral()
 		{
 			FunctionLiteral functionLiteral = new FunctionLiteral { Token = CurrentToken };
 
@@ -275,7 +278,7 @@
 			return functionLiteral;
 		}
 
-		private List<Identifier> ParseFunctionParameters()
+		private List<Identifier>? ParseFunctionParameters()
 		{
 			List<Identifier> parameters = new List<Identifier>();
 
@@ -298,10 +301,35 @@
 				parameters.Add(parameter);
 			}
 
-			if (ExpectPeek(TokenType.RPAREN) == false)
-				return null;
+			return ExpectPeek(TokenType.RPAREN) == false ? null : parameters;
+		}
 
-			return parameters;
+		private Expression ParseCallExpression(Expression function)
+		{
+			return new CallExpression { Token = CurrentToken, Function = function, Arguments = ParseCallArguments() };
+		}
+
+		private List<Expression?>? ParseCallArguments()
+		{
+			List<Expression?> arguments = new List<Expression?>();
+
+			if (PeekToken.Type == TokenType.RPAREN)
+			{
+				AdvanceTokens();
+				return arguments;
+			}
+
+			AdvanceTokens();
+			arguments.Add(ParseExpression(Precedence.LOWEST));
+
+			while (PeekToken.Type == TokenType.COMMA)
+			{
+				AdvanceTokens();
+				AdvanceTokens();
+				arguments.Add(ParseExpression(Precedence.LOWEST));
+			}
+
+			return ExpectPeek(TokenType.RPAREN) == false ? null : arguments;
 		}
 
 		private BlockStatement ParseBlockStatement()
@@ -312,7 +340,7 @@
 
 			while (CurrentToken.Type != TokenType.RBRACE && CurrentToken.Type != TokenType.EOF)
 			{
-				Statement statement = ParseStatement();
+				Statement? statement = ParseStatement();
 				if (statement != null)
 					blockStatement.Statements.Add(statement);
 				AdvanceTokens();
