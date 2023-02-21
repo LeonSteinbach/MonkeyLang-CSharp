@@ -6,9 +6,7 @@ namespace Interpreter
 	{
 		public static int Main(String[] args)
 		{
-			string text = "let func = fn(a, b) {" +
-			              "    return fn(c, d) { return a + b + c + d; };" +
-			              "}";
+			string text = "a == b";
 
 			Stopwatch stopwatch = Stopwatch.StartNew();
 			Lexer lexer = new Lexer(text);

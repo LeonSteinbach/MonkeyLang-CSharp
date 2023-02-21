@@ -37,24 +37,8 @@
 			{
 				(byte) '=' => ProcessDoubleCharacterToken(TokenType.EQ, TokenType.ASSIGN, '='),
 				(byte) '!' => ProcessDoubleCharacterToken(TokenType.NEQ, TokenType.BANG, '='),
-				(byte) '+' =>
-					nextCharacter switch
-					{
-						(byte) '=' => ProcessDoubleCharacterToken(TokenType.PLUS_EQ, TokenType.PLUS, '='),
-						(byte) '+' => ProcessDoubleCharacterToken(TokenType.PLUS_PLUS, TokenType.PLUS, '+'),
-						_ => new Token(TokenType.PLUS, ((char) currentCharacter).ToString())
-					},
-				(byte) '-' =>
-					nextCharacter switch
-					{
-						(byte) '=' => ProcessDoubleCharacterToken(TokenType.MINUS_EQ, TokenType.PLUS, '='),
-						(byte) '-' => ProcessDoubleCharacterToken(TokenType.MINUS_MINUS, TokenType.PLUS, '-'),
-						_ => new Token(TokenType.MINUS, ((char) currentCharacter).ToString())
-					},
-				(byte) '<' => ProcessDoubleCharacterToken(TokenType.LE, TokenType.LT, '='),
-				(byte) '>' => ProcessDoubleCharacterToken(TokenType.GE, TokenType.GT, '='),
-				(byte) '*' => ProcessDoubleCharacterToken(TokenType.MULT_EQ, TokenType.ASTERIX, '='),
-				(byte) '/' => ProcessDoubleCharacterToken(TokenType.DIV_EQ, TokenType.SLASH, '='),
+				(byte) '+' => new Token(TokenType.PLUS, ((char)currentCharacter).ToString()),
+				(byte) '-' => new Token(TokenType.MINUS, ((char)currentCharacter).ToString()),
 				(byte) ';' => new Token(TokenType.SEMICOLON, ((char) currentCharacter).ToString()),
 				(byte) '(' => new Token(TokenType.LPAREN, ((char) currentCharacter).ToString()),
 				(byte) ')' => new Token(TokenType.RPAREN, ((char) currentCharacter).ToString()),

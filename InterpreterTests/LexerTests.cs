@@ -73,7 +73,7 @@ namespace InterpreterTests
 		[TestMethod]
 		public void TestDoubleCharacterTokens()
 		{
-			string input = "= == ! != + += ++ - -= -- < <= > >= * *= / /=";
+			string input = "= == ! != + - < > * /";
 			List<Token> targets = new List<Token>
 			{
 				new(TokenType.ASSIGN, "="),
@@ -81,19 +81,11 @@ namespace InterpreterTests
 				new(TokenType.BANG, "!"),
 				new(TokenType.NEQ, "!="),
 				new(TokenType.PLUS, "+"),
-				new(TokenType.PLUS_EQ, "+="),
-				new(TokenType.PLUS_PLUS, "++"),
 				new(TokenType.MINUS, "-"),
-				new(TokenType.MINUS_EQ, "-="),
-				new(TokenType.MINUS_MINUS, "--"),
 				new(TokenType.LT, "<"),
-				new(TokenType.LE, "<="),
 				new(TokenType.GT, ">"),
-				new(TokenType.GE, ">="),
 				new(TokenType.ASTERIX, "*"),
-				new(TokenType.MULT_EQ, "*="),
 				new(TokenType.SLASH, "/"),
-				new(TokenType.DIV_EQ, "/="),
 				new(TokenType.EOF, ""),
 			};
 			List<Token> results = new List<Token>();

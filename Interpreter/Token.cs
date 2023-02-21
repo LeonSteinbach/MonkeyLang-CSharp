@@ -17,8 +17,6 @@
 
 		LT,
 		GT,
-		LE,
-		GE,
 
 		COMMA,
 		SEMICOLON,
@@ -38,13 +36,6 @@
 
 		EQ,
 		NEQ,
-		PLUS_EQ,
-		MINUS_EQ,
-		MULT_EQ,
-		DIV_EQ,
-
-		PLUS_PLUS,
-		MINUS_MINUS,
 
 		FUNCTION,
 		LET

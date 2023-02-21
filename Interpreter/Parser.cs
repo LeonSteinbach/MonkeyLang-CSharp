@@ -222,16 +222,14 @@
 			return new Boolean { Token = CurrentToken, Value = CurrentToken.Type == TokenType.TRUE };
 		}
 
-		private Expression ParseGroupedExpression()
+		private Expression? ParseGroupedExpression()
 		{
 			AdvanceTokens();
-			Expression expression = ParseExpression(Precedence.LOWEST);
-			if (ExpectPeek(TokenType.RPAREN) == false)
-				return null;
-			return expression;
+			Expression? expression = ParseExpression(Precedence.LOWEST);
+			return ExpectPeek(TokenType.RPAREN) == false ? null : expression;
 		}
 
-		private IfExpression ParseIfExpression()
+		private IfExpression? ParseIfExpression()
 		{
 			IfExpression ifExpression = new IfExpression { Token = CurrentToken };
 
@@ -249,15 +247,13 @@
 
 			ifExpression.Consequence = ParseBlockStatement();
 
-			if (PeekToken.Type == TokenType.ELSE)
-			{
-				AdvanceTokens();
+			if (PeekToken.Type != TokenType.ELSE) return ifExpression;
 
-				if (ExpectPeek(TokenType.LBRACE) == false)
-					return null;
+			AdvanceTokens();
+			if (ExpectPeek(TokenType.LBRACE) == false)
+				return null;
 
-				ifExpression.Alternative = ParseBlockStatement();
-			}
+			ifExpression.Alternative = ParseBlockStatement();
 
 			return ifExpression;
 		}
@@ -362,16 +358,12 @@
 
 		private Precedence PeekPrecedence()
 		{
-			if (Precedences.ContainsKey(PeekToken.Type))
-				return Precedences[PeekToken.Type];
-			return Precedence.LOWEST;
+			return Precedences.ContainsKey(PeekToken.Type) ? Precedences[PeekToken.Type] : Precedence.LOWEST;
 		}
 
 		private Precedence CurrentPrecedence()
 		{
-			if (Precedences.ContainsKey(CurrentToken.Type))
-				return Precedences[CurrentToken.Type];
-			return Precedence.LOWEST;
+			return Precedences.ContainsKey(CurrentToken.Type) ? Precedences[CurrentToken.Type] : Precedence.LOWEST;
 		}
 	}
 
