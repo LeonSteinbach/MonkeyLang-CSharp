@@ -50,6 +50,7 @@
 			RegisterPrefix(TokenType.MINUS, ParsePrefixExpression);
 			RegisterPrefix(TokenType.LPAREN, ParseGroupedExpression);
 			RegisterPrefix(TokenType.IF, ParseIfExpression);
+			RegisterPrefix(TokenType.FUNCTION, ParseFunctionLiteral);
 
 			RegisterInfix(TokenType.PLUS, ParseInfixExpression);
 			RegisterInfix(TokenType.MINUS, ParseInfixExpression);
@@ -259,6 +260,52 @@
 			}
 
 			return ifExpression;
+		}
+
+		private Expression ParseFunctionLiteral()
+		{
+			FunctionLiteral functionLiteral = new FunctionLiteral { Token = CurrentToken };
+
+			if (ExpectPeek(TokenType.LPAREN) == false)
+				return null;
+
+			functionLiteral.Parameters = ParseFunctionParameters();
+
+			if (ExpectPeek(TokenType.LBRACE) == false)
+				return null;
+
+			functionLiteral.Body = ParseBlockStatement();
+
+			return functionLiteral;
+		}
+
+		private List<Identifier> ParseFunctionParameters()
+		{
+			List<Identifier> parameters = new List<Identifier>();
+
+			if (PeekToken.Type == TokenType.RPAREN)
+			{
+				AdvanceTokens();
+				return parameters;
+			}
+			AdvanceTokens();
+
+			Identifier parameter = new Identifier { Token = CurrentToken, Value = CurrentToken.Literal };
+			parameters.Add(parameter);
+
+			while (PeekToken.Type == TokenType.COMMA)
+			{
+				AdvanceTokens();
+				AdvanceTokens();
+
+				parameter = new Identifier { Token = CurrentToken, Value = CurrentToken.Literal };
+				parameters.Add(parameter);
+			}
+
+			if (ExpectPeek(TokenType.RPAREN) == false)
+				return null;
+
+			return parameters;
 		}
 
 		private BlockStatement ParseBlockStatement()

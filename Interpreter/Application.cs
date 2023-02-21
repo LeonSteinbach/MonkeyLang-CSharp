@@ -6,18 +6,9 @@ namespace Interpreter
 	{
 		public static int Main(String[] args)
 		{
-			string text = "(a + 1) * -b";
-
-			/*
-			Lexer lexer = new Lexer(text);
-
-			Token token;
-			do
-			{
-				token = lexer.NextToken();
-				Console.WriteLine(token);
-			} while (token.Type != TokenType.EOF);
-			*/
+			string text = "let func = fn(a, b) {" +
+			              "    return fn(c, d) { return a + b + c + d; };" +
+			              "}";
 
 			Stopwatch stopwatch = Stopwatch.StartNew();
 			Lexer lexer = new Lexer(text);

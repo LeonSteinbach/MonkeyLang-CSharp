@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-
-namespace Interpreter
+﻿namespace Interpreter
 {
 	public interface Node
 	{
@@ -191,6 +189,38 @@ namespace Interpreter
 			result += Util.GetIndentedNodeString("},", level + 1);
 			result += Util.GetIndentedNodeString("alternative: {", level + 1);
 			result += Alternative?.String(level + 2, nextTokenExists);
+			result += Util.GetIndentedNodeString("}", level + 1);
+			result += Util.GetIndentedNodeString(nextTokenExists ? "}," : "}", level);
+
+			return result;
+		}
+	}
+
+	public class FunctionLiteral : Expression
+	{
+		public Token Token { get; set; }
+		public List<Identifier> Parameters { get; set; }
+		public BlockStatement Body { get; set; }
+
+		public string TokenLiteral()
+		{
+			return Token.Literal;
+		}
+
+		public string String(int level, bool nextTokenExists)
+		{
+			string result = string.Empty;
+
+			result += Util.GetIndentedNodeString(GetType().Name + ": {", level);
+			result += Util.GetIndentedNodeString("type: " + Token.Type + ",", level + 1);
+			result += Util.GetIndentedNodeString("parameters: {", level + 1);
+			for (int i = 0; i < Parameters.Count; i++)
+			{
+				result += Parameters[i].String(level + 2, i < Parameters.Count - 1);
+			}
+			result += Util.GetIndentedNodeString("},", level + 1);
+			result += Util.GetIndentedNodeString("body: {", level + 1);
+			result += Body?.String(level + 2, nextTokenExists);
 			result += Util.GetIndentedNodeString("}", level + 1);
 			result += Util.GetIndentedNodeString(nextTokenExists ? "}," : "}", level);
 
