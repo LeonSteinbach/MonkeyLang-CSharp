@@ -141,7 +141,7 @@
 			AdvanceTokens();
 			letStatement.Value = ParseExpression(Precedence.LOWEST);
 
-			if (CurrentToken.Type == TokenType.SEMICOLON)
+			if (PeekToken.Type == TokenType.SEMICOLON)
 				AdvanceTokens();
 
 			return letStatement;

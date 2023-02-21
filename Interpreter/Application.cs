@@ -6,7 +6,7 @@ namespace Interpreter
 	{
 		public static int Main(String[] args)
 		{
-			string text = "return a + b";
+			string text = "let a = 0;";
 
 			Stopwatch stopwatch = Stopwatch.StartNew();
 			Lexer lexer = new Lexer(text);
