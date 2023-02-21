@@ -6,7 +6,25 @@ namespace Interpreter
 	{
 		public static int Main(String[] args)
 		{
-			string text = "let a = 0;";
+			string text = "let mult = fn(a, b) { a * b };" +
+			              "let twice = fn(x) { let factor = 2; return mult(x, factor); };" +
+			              "let two = twice(1);" +
+			              "let three = 3;" +
+			              "if (two < tree) { true } else { false };" +
+			              "(a + b) * c";
+
+			/*
+			string input = "= == ! != + - < > * /";
+
+			Lexer lexer = new Lexer(input);
+
+			Token token;
+			do
+			{
+				token = lexer.NextToken();
+				Console.WriteLine(token);
+			} while (token.Type != TokenType.EOF);
+			*/
 
 			Stopwatch stopwatch = Stopwatch.StartNew();
 			Lexer lexer = new Lexer(text);
