@@ -6,7 +6,10 @@ namespace Interpreter
 	{
 		public static int Main(String[] args)
 		{
-			string text = "1 == true";
+			string text = "let a = 5;" +
+			              "let b = a > 3;" +
+			              "let c = a * 5;" +
+			              "if (b == !!true) { c; } else { a * 3 }";
 
 			/*
 			string input = "= == ! != + - < > * /";
@@ -24,6 +27,7 @@ namespace Interpreter
 			Stopwatch stopwatch = Stopwatch.StartNew();
 			Lexer lexer = new Lexer(text);
 			Parser parser = new Parser(lexer);
+			Environment environment = new Environment();
 
 			Program program = parser.ParseProgram();
 			int elapsedMilliseconds = (int)stopwatch.Elapsed.TotalMilliseconds;
@@ -37,7 +41,7 @@ namespace Interpreter
 				Console.WriteLine(error);
 
 			Console.WriteLine();
-			Console.WriteLine(Evaluator.Evaluate(program));
+			Console.WriteLine(Evaluator.Evaluate(program, environment));
 			Console.WriteLine();
 
 			Console.ReadKey();

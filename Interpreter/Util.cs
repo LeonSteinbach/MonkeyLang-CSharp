@@ -10,7 +10,7 @@
 			result += text;
 
 			if (newLine)
-				result += Environment.NewLine;
+				result += System.Environment.NewLine;
 			return result;
 		}
 	}

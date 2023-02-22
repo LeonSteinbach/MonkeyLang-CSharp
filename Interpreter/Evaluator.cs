@@ -6,36 +6,44 @@
 		private static Boolean FALSE = new() { Value = false };
 		private static Null NULL = new();
 
-		public static Object Evaluate(Node node)
+		public static Object Evaluate(Node node, Environment environment)
 		{
 			switch (node)
 			{
 				case Program program:
-					return EvaluateProgram(program);
+					return EvaluateProgram(program, environment);
 				case ExpressionStatement expressionStatement:
-					return Evaluate(expressionStatement.Expression);
+					return Evaluate(expressionStatement.Expression, environment);
 				case IntegerLiteral integerLiteral:
 					return new Integer { Value = integerLiteral.Value };
 				case BooleanLiteral booleanLiteral:
 					return booleanLiteral.Value ? TRUE : FALSE;
 				case PrefixExpression prefixExpression:
-					Object prefixRightValue = Evaluate(prefixExpression.RightExpression);
+					Object prefixRightValue = Evaluate(prefixExpression.RightExpression, environment);
 					return EvaluatePrefixExpression(prefixExpression.Operator, prefixRightValue);
 				case InfixExpression infixExpression:
-					Object infixLeftValue = Evaluate(infixExpression.LeftExpression);
+					Object infixLeftValue = Evaluate(infixExpression.LeftExpression, environment);
 					if (IsError(infixLeftValue))
 						return infixLeftValue;
-					Object infixRightValue = Evaluate(infixExpression.RightExpression);
+					Object infixRightValue = Evaluate(infixExpression.RightExpression, environment);
 					if (IsError(infixRightValue))
 						return infixRightValue;
 					return EvaluateInfixExpression(infixExpression.Operator, infixLeftValue, infixRightValue);
 				case BlockStatement blockStatement:
-					return EvaluateBlockStatement(blockStatement);
+					return EvaluateBlockStatement(blockStatement, environment);
 				case IfExpression ifExpression:
-					return EvaluateIfExpression(ifExpression);
+					return EvaluateIfExpression(ifExpression, environment);
 				case ReturnStatement returnStatement:
-					Object returnValue = Evaluate(returnStatement.ReturnValue);
+					Object returnValue = Evaluate(returnStatement.ReturnValue, environment);
 					return IsError(returnValue) ? returnValue : new Return { Value = returnValue };
+				case LetStatement letStatement:
+					Object letValue = Evaluate(letStatement.Value, environment);
+					if (IsError(letValue))
+						return letValue;
+					environment.Set(letStatement.Name.Value, letValue);
+					return NULL;
+				case Identifier identifier:
+					return EvaluateIdentifier(identifier, environment);
 				default:
 					return NULL;
 			}
@@ -46,29 +54,27 @@
 			return obj != NULL && obj.Type() == ObjectType.ERROR;
 		}
 
-		private static Object EvaluateProgram(Program program)
+		private static Object EvaluateProgram(Program program, Environment environment)
 		{
 			Object result = NULL;
 			foreach (Statement statement in program.Statements)
 			{
-				result = Evaluate(statement);
+				result = Evaluate(statement, environment);
 
-				return result.Type() switch
-				{
-					ObjectType.RETURN => ((Return)result).Value,
-					ObjectType.ERROR => result,
-					_ => NULL
-				};
+				if (result.Type() == ObjectType.RETURN)
+					return ((Return) result).Value;
+				if (result.Type() == ObjectType.ERROR)
+					return result;
 			}
 			return result;
 		}
 
-		private static Object EvaluateBlockStatement(BlockStatement blockStatement)
+		private static Object EvaluateBlockStatement(BlockStatement blockStatement, Environment environment)
 		{
 			Object result = NULL;
 			foreach (Statement statement in blockStatement.Statements)
 			{
-				result = Evaluate(statement);
+				result = Evaluate(statement, environment);
 				if (result.Type() == ObjectType.RETURN || result.Type() == ObjectType.ERROR)
 					return result;
 			}
@@ -135,15 +141,23 @@
 			};
 		}
 
-		private static Object EvaluateIfExpression(IfExpression ifExpression)
+		private static Object EvaluateIfExpression(IfExpression ifExpression, Environment environment)
 		{
-			Object condition = Evaluate(ifExpression.Condition);
+			Object condition = Evaluate(ifExpression.Condition, environment);
 			if (IsError(condition))
 				return condition;
 
 			return IsTruthy(condition)
-				? Evaluate(ifExpression.Consequence)
-				: Evaluate(ifExpression.Alternative);
+				? Evaluate(ifExpression.Consequence, environment)
+				: Evaluate(ifExpression.Alternative, environment);
+		}
+
+		private static Object EvaluateIdentifier(Identifier identifier, Environment environment)
+		{
+			Tuple<Object?, bool> result = environment.Get(identifier.Value);
+			return result.Item2 == false ?
+				new Error { Message = $"identifier not found: {identifier.Value}" } :
+				result.Item1 ?? NULL;
 		}
 
 		private static bool IsTruthy(Object obj)
