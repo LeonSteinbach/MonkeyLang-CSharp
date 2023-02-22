@@ -44,6 +44,16 @@
 					return NULL;
 				case Identifier identifier:
 					return EvaluateIdentifier(identifier, environment);
+				case FunctionLiteral functionLiteral:
+					return new Function { Parameters = functionLiteral.Parameters, Body = functionLiteral.Body, Environment = environment };
+				case CallExpression callExpression:
+					Object callFunction = Evaluate(callExpression.Function, environment);
+					if (IsError(callFunction))
+						return callFunction;
+					List<Object> callArguments = EvaluateExpressions(callExpression.Arguments, environment);
+					if (callArguments.Count == 1 && IsError(callArguments[0]))
+						return callArguments[0];
+					return ApplyFunction(callFunction, callArguments);
 				default:
 					return NULL;
 			}
@@ -158,6 +168,44 @@
 			return result.Item2 == false ?
 				new Error { Message = $"identifier not found: {identifier.Value}" } :
 				result.Item1 ?? NULL;
+		}
+
+		private static List<Object> EvaluateExpressions(List<Expression?>? expressions, Environment environment)
+		{
+			List<Object> result = new List<Object>();
+
+			if (expressions == null) return result;
+			foreach (var evaluated in expressions.Select(expression => Evaluate(expression, environment)))
+			{
+				if (IsError(evaluated))
+					return new List<Object> {evaluated};
+				result.Add(evaluated);
+			}
+
+			return result;
+		}
+
+		private static Object ApplyFunction(Object function, List<Object> arguments)
+		{
+			if (function.Type() != ObjectType.FUNCTION)
+				return new Error { Message = $"not a function: {function.Type()}" };
+
+			Environment extendedEnvironment = ExtendFunctionEnvironment((Function)function, arguments);
+			Object evaluated = Evaluate(((Function) function).Body, extendedEnvironment);
+			return UnwrapReturnValue(evaluated);
+		}
+
+		private static Environment ExtendFunctionEnvironment(Function function, List<Object> arguments)
+		{
+			Environment environment = new Environment(function.Environment);
+			foreach (var item in function.Parameters.Select((parameter, i) => new {i, parameter}))
+				environment.Set(item.parameter.Value, arguments[item.i]);
+			return environment;
+		}
+
+		private static Object UnwrapReturnValue(Object obj)
+		{
+			return (obj.Type() == ObjectType.RETURN ? ((Return) obj).Value : obj) ?? NULL;
 		}
 
 		private static bool IsTruthy(Object obj)

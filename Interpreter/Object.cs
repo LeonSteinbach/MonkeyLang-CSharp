@@ -7,6 +7,7 @@
 		NULL,
 		RETURN,
 		ERROR,
+		FUNCTION,
 	}
 
 	public interface Object
@@ -85,6 +86,24 @@
 		public ObjectType Type()
 		{
 			return ObjectType.ERROR;
+		}
+	}
+
+	public class Function : Object
+	{
+		public List<Identifier>? Parameters { get; set; }
+		public BlockStatement? Body { get; set; }
+		public Environment Environment { get; set; }
+
+		public override string ToString()
+		{
+			string parametersString = string.Join(", ", Parameters);
+			return $"fn({parametersString}) {Body}";
+		}
+
+		public ObjectType Type()
+		{
+			return ObjectType.FUNCTION;
 		}
 	}
 }

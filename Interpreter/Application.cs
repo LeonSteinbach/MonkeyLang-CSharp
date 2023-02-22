@@ -6,7 +6,13 @@ namespace Interpreter
 	{
 		public static int Main(String[] args)
 		{
-			string text = "let a = 123; !(a == -123);";
+			string text = "let fib = fn(n) {" +
+			              "    if (n < 2) {" +
+			              "        return n;" +
+			              "    }" +
+			              "    fib (n - 1) + fib(n - 2)" +
+			              "};" +
+			              "fib(35);";
 
 			/*
 			string input = "= == ! != + - < > * /";
@@ -27,19 +33,19 @@ namespace Interpreter
 			Environment environment = new Environment();
 
 			Program? program = parser.ParseProgram();
-			int elapsedMilliseconds = (int)stopwatch.Elapsed.TotalMilliseconds;
 
 			Console.WriteLine();
 			Parser.PrintProgram(program);
 			Console.WriteLine();
-			Console.WriteLine("Elapsed milliseconds: " + elapsedMilliseconds);
 
 			foreach (string error in parser.Errors)
 				Console.WriteLine(error);
 
 			Console.WriteLine();
 			Console.WriteLine(Evaluator.Evaluate(program, environment));
+			int elapsedMilliseconds = (int)stopwatch.Elapsed.TotalMilliseconds;
 			Console.WriteLine();
+			Console.WriteLine("Elapsed milliseconds: " + elapsedMilliseconds);
 
 			Console.ReadKey();
 
