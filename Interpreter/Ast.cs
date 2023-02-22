@@ -12,11 +12,11 @@
 
 	public class Program : Node
 	{
-		public List<Statement> Statements { get; set; }
+		public List<Statement?> Statements { get; set; }
 
 		public Program()
 		{
-			Statements = new List<Statement>();
+			Statements = new List<Statement?>();
 		}
 
 		public string TokenLiteral()
@@ -109,7 +109,7 @@
 	{
 		public Token Token { get; set; }
 		public string Operator { get; set; }
-		public Expression RightExpression { get; set; }
+		public Expression? RightExpression { get; set; }
 
 		public string TokenLiteral()
 		{
@@ -136,8 +136,8 @@
 	{
 		public Token Token { get; set; }
 		public string Operator { get; set; }
-		public Expression LeftExpression { get; set; }
-		public Expression RightExpression { get; set; }
+		public Expression? LeftExpression { get; set; }
+		public Expression? RightExpression { get; set; }
 
 		public string TokenLiteral()
 		{
@@ -166,9 +166,9 @@
 	public class IfExpression : Expression
 	{
 		public Token Token { get; set; }
-		public Expression Condition { get; set; }
-		public BlockStatement Consequence { get; set; }
-		public BlockStatement Alternative { get; set; }
+		public Expression? Condition { get; set; }
+		public BlockStatement? Consequence { get; set; }
+		public BlockStatement? Alternative { get; set; }
 
 		public string TokenLiteral()
 		{
@@ -199,8 +199,8 @@
 	public class FunctionLiteral : Expression
 	{
 		public Token Token { get; set; }
-		public List<Identifier> Parameters { get; set; }
-		public BlockStatement Body { get; set; }
+		public List<Identifier>? Parameters { get; set; }
+		public BlockStatement? Body { get; set; }
 
 		public string TokenLiteral()
 		{
@@ -232,7 +232,7 @@
 	{
 		public Token Token { get; set; }
 		public Expression Function { get; set; }
-		public List<Expression> Arguments { get; set; }
+		public List<Expression?>? Arguments { get; set; }
 
 		public string TokenLiteral()
 		{
@@ -263,7 +263,7 @@
 	public class BlockStatement : Statement
 	{
 		public Token Token { get; set; }
-		public List<Statement> Statements { get; set; }
+		public List<Statement?> Statements { get; set; }
 
 		public string TokenLiteral()
 		{
@@ -289,7 +289,7 @@
 	{
 		public Token Token { get; set; }
 		public Identifier Name { get; set; }
-		public Expression Value { get; set; }
+		public Expression? Value { get; set; }
 
 		public string TokenLiteral()
 		{
@@ -317,7 +317,7 @@
 	public class ReturnStatement : Statement
 	{
 		public Token Token { get; set; }
-		public Expression ReturnValue { get; set; }
+		public Expression? ReturnValue { get; set; }
 
 		public string TokenLiteral()
 		{
@@ -342,7 +342,7 @@
 	public class ExpressionStatement : Statement
 	{
 		public Token Token { get; set; }
-		public Expression Expression { get; set; }
+		public Expression? Expression { get; set; }
 
 		public string TokenLiteral()
 		{

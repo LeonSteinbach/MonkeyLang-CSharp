@@ -15,7 +15,7 @@
 			return Tuple.Create(value, error);
 		}
 
-		public Object? Set(string name, Object value)
+		public Object Set(string name, Object value)
 		{
 			Store[name] = value;
 			return value;

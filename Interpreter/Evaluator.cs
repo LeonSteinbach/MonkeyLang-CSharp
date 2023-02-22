@@ -6,7 +6,7 @@
 		private static Boolean FALSE = new() { Value = false };
 		private static Null NULL = new();
 
-		public static Object Evaluate(Node node, Environment environment)
+		public static Object Evaluate(Node? node, Environment environment)
 		{
 			switch (node)
 			{
@@ -57,7 +57,7 @@
 		private static Object EvaluateProgram(Program program, Environment environment)
 		{
 			Object result = NULL;
-			foreach (Statement statement in program.Statements)
+			foreach (Statement? statement in program.Statements)
 			{
 				result = Evaluate(statement, environment);
 
@@ -72,7 +72,7 @@
 		private static Object EvaluateBlockStatement(BlockStatement blockStatement, Environment environment)
 		{
 			Object result = NULL;
-			foreach (Statement statement in blockStatement.Statements)
+			foreach (Statement? statement in blockStatement.Statements)
 			{
 				result = Evaluate(statement, environment);
 				if (result.Type() == ObjectType.RETURN || result.Type() == ObjectType.ERROR)

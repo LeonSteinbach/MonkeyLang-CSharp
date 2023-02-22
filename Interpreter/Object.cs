@@ -60,11 +60,11 @@
 
 	public class Return : Object
 	{
-		public Object Value { get; set; }
+		public Object? Value { get; set; }
 
 		public override string ToString()
 		{
-			return Value.ToString();
+			return Value?.ToString() ?? string.Empty;
 		}
 
 		public ObjectType Type()
@@ -75,7 +75,7 @@
 
 	public class Error : Object
 	{
-		public string Message { get; set; }
+		public string? Message { get; set; }
 
 		public override string ToString()
 		{

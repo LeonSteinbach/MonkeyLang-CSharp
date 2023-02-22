@@ -6,7 +6,7 @@ namespace Interpreter
 	{
 		public static int Main(String[] args)
 		{
-			string text = "true; false; TRUE; FALSE;";
+			string text = "let a = 123; !(a == -123);";
 
 			/*
 			string input = "= == ! != + - < > * /";
@@ -26,7 +26,7 @@ namespace Interpreter
 			Parser parser = new Parser(lexer);
 			Environment environment = new Environment();
 
-			Program program = parser.ParseProgram();
+			Program? program = parser.ParseProgram();
 			int elapsedMilliseconds = (int)stopwatch.Elapsed.TotalMilliseconds;
 
 			Console.WriteLine();

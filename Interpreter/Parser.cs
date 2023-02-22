@@ -1,7 +1,7 @@
 ﻿namespace Interpreter
 {
-	using PrefixParseFn = Func<Expression>;
-	using InfixParseFn = Func<Expression, Expression>;
+	using PrefixParseFn = Func<Expression?>;
+	using InfixParseFn = Func<Expression, Expression?>;
 
 	public class Parser
 	{
@@ -10,10 +10,10 @@
 		private Token PeekToken { get; set; }
 		public List<string> Errors { get; set; }
 
-		public Dictionary<TokenType, Delegate> PrefixParseFunctions;
-		public Dictionary<TokenType, Delegate> InfixParseFunctions;
+		public Dictionary<TokenType, Delegate> PrefixParseFunctions { get; set; }
+		public Dictionary<TokenType, Delegate> InfixParseFunctions { get; set; }
 
-		public Dictionary<TokenType, Precedence> Precedences;
+		public Dictionary<TokenType, Precedence> Precedences { get; set; }
 
 		public Parser(Lexer lexer)
 		{
@@ -65,9 +65,9 @@
 			RegisterInfix(TokenType.GT, ParseInfixExpression);
 		}
 
-		public static void PrintProgram(Program program)
+		public static void PrintProgram(Program? program)
 		{
-			Console.WriteLine(program.String(0, program.Statements.Count > 1));
+			Console.WriteLine(program?.String(0, program.Statements.Count > 1));
 		}
 
 		private void PeekError(TokenType tokenType)
@@ -128,7 +128,7 @@
 
 		private LetStatement? ParseLetStatement()
 		{
-			LetStatement? letStatement = new LetStatement { Token = CurrentToken };
+			LetStatement letStatement = new() { Token = CurrentToken };
 
 			if (ExpectPeek(TokenType.IDENT) == false)
 				return null;
@@ -206,7 +206,7 @@
 			return new Identifier { Token = CurrentToken, Value = CurrentToken.Literal };
 		}
 
-		private IntegerLiteral? ParseIntegerLiteral()
+		private Expression? ParseIntegerLiteral()
 		{
 			IntegerLiteral integerLiteral = new IntegerLiteral { Token = CurrentToken };
 			bool error = int.TryParse(CurrentToken.Literal, out int value);
@@ -232,7 +232,7 @@
 			return ExpectPeek(TokenType.RPAREN) == false ? null : expression;
 		}
 
-		private IfExpression? ParseIfExpression()
+		private Expression? ParseIfExpression()
 		{
 			IfExpression ifExpression = new IfExpression { Token = CurrentToken };
 
@@ -334,7 +334,7 @@
 
 		private BlockStatement ParseBlockStatement()
 		{
-			BlockStatement blockStatement = new BlockStatement { Token = CurrentToken, Statements = new List<Statement>() };
+			BlockStatement blockStatement = new BlockStatement { Token = CurrentToken, Statements = new List<Statement?>() };
 
 			AdvanceTokens();
 

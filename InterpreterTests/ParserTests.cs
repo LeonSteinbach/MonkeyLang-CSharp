@@ -11,7 +11,7 @@
 			Lexer lexer1 = new Lexer(input1);
 			Parser parser1 = new Parser(lexer1);
 
-			Program program1 = parser1.ParseProgram();
+			Program? program1 = parser1.ParseProgram();
 
 			Assert.IsTrue(parser1.Errors.Count == 0);
 			Assert.IsTrue(program1.Statements.Count == 2);
@@ -39,7 +39,7 @@
 			Lexer lexer = new Lexer(input);
 			Parser parser = new Parser(lexer);
 
-			Program program = parser.ParseProgram();
+			Program? program = parser.ParseProgram();
 
 			Assert.IsTrue(parser.Errors.Count == 0);
 			Assert.IsTrue(program.Statements.Count == 4);
@@ -59,7 +59,7 @@
 			Lexer lexer = new Lexer(input);
 			Parser parser = new Parser(lexer);
 
-			Program program = parser.ParseProgram();
+			Program? program = parser.ParseProgram();
 
 			Assert.IsTrue(parser.Errors.Count == 0);
 			Assert.IsTrue(program.Statements.Count == 2);
@@ -77,7 +77,7 @@
 			Lexer lexer = new Lexer(input);
 			Parser parser = new Parser(lexer);
 
-			Program program = parser.ParseProgram();
+			Program? program = parser.ParseProgram();
 
 			Assert.IsTrue(parser.Errors.Count == 0);
 			Assert.IsTrue(program.Statements.Count == 3);
@@ -97,7 +97,7 @@
 			Lexer lexer = new Lexer(input);
 			Parser parser = new Parser(lexer);
 
-			Program program = parser.ParseProgram();
+			Program? program = parser.ParseProgram();
 
 			Assert.IsTrue(parser.Errors.Count == 0);
 			Assert.IsTrue(program.Statements.Count == 8);
@@ -124,7 +124,7 @@
 			Lexer lexer = new Lexer(input);
 			Parser parser = new Parser(lexer);
 
-			Program program = parser.ParseProgram();
+			Program? program = parser.ParseProgram();
 
 			Assert.IsTrue(parser.Errors.Count == 0);
 			Assert.IsTrue(program.Statements.Count == 8);
@@ -146,7 +146,7 @@
 			Lexer lexer = new Lexer(input);
 			Parser parser = new Parser(lexer);
 
-			Program program = parser.ParseProgram();
+			Program? program = parser.ParseProgram();
 
 			Assert.IsTrue(parser.Errors.Count == 0);
 			Assert.IsTrue(program.Statements.Count == 2);
@@ -162,7 +162,7 @@
 			Lexer lexer = new Lexer(input);
 			Parser parser = new Parser(lexer);
 
-			Program program = parser.ParseProgram();
+			Program? program = parser.ParseProgram();
 
 			Assert.IsTrue(parser.Errors.Count == 0);
 			Assert.IsTrue(program.Statements.Count == 1);
@@ -178,7 +178,7 @@
 			Lexer lexer = new Lexer(input);
 			Parser parser = new Parser(lexer);
 
-			Program program = parser.ParseProgram();
+			Program? program = parser.ParseProgram();
 
 			Assert.IsTrue(parser.Errors.Count == 0);
 			Assert.IsTrue(program.Statements.Count == 2);
@@ -199,7 +199,7 @@
 			Lexer lexer = new Lexer(input);
 			Parser parser = new Parser(lexer);
 
-			Program program = parser.ParseProgram();
+			Program? program = parser.ParseProgram();
 
 			Assert.IsTrue(parser.Errors.Count == 0);
 			Assert.IsTrue(program.Statements.Count == 1);
@@ -215,7 +215,7 @@
 			Lexer lexer = new Lexer(input);
 			Parser parser = new Parser(lexer);
 
-			Program program = parser.ParseProgram();
+			Program? program = parser.ParseProgram();
 
 			Assert.IsTrue(parser.Errors.Count == 0);
 			Assert.IsTrue(program.Statements.Count == 2);
