@@ -82,7 +82,7 @@
 		}
 	}
 
-	public class Boolean : Expression
+	public class BooleanLiteral : Expression
 	{
 		public Token Token { get; set; }
 		public bool Value { get; set; }

@@ -220,9 +220,9 @@
 			return integerLiteral;
 		}
 
-		private Boolean ParseBoolean()
+		private BooleanLiteral ParseBoolean()
 		{
-			return new Boolean { Token = CurrentToken, Value = CurrentToken.Type == TokenType.TRUE };
+			return new BooleanLiteral { Token = CurrentToken, Value = CurrentToken.Type == TokenType.TRUE };
 		}
 
 		private Expression? ParseGroupedExpression()

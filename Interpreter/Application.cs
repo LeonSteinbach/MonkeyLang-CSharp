@@ -6,7 +6,7 @@ namespace Interpreter
 	{
 		public static int Main(String[] args)
 		{
-			string text = "add(1, 2); add(3, add(4, 5));";
+			string text = "1 == true";
 
 			/*
 			string input = "= == ! != + - < > * /";
@@ -35,6 +35,10 @@ namespace Interpreter
 
 			foreach (string error in parser.Errors)
 				Console.WriteLine(error);
+
+			Console.WriteLine();
+			Console.WriteLine(Evaluator.Evaluate(program));
+			Console.WriteLine();
 
 			Console.ReadKey();
 
