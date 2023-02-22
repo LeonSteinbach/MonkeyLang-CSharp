@@ -1,4 +1,6 @@
-﻿namespace InterpreterTests
+﻿using Boolean = Interpreter.Boolean;
+
+namespace InterpreterTests
 {
 	[TestClass]
 	public class ParserTests
@@ -137,6 +139,97 @@
 			Assert.IsTrue(((InfixExpression)((ExpressionStatement)(program.Statements[5])).Expression).Operator == ">");
 			Assert.IsTrue(((InfixExpression)((ExpressionStatement)(program.Statements[6])).Expression).Operator == "==");
 			Assert.IsTrue(((InfixExpression)((ExpressionStatement)(program.Statements[7])).Expression).Operator == "!=");
+		}
+
+		[TestMethod]
+		public void TestBooleanLiterals()
+		{
+			string input = "true; false; TRUE; FALSE;";
+			Lexer lexer = new Lexer(input);
+			Parser parser = new Parser(lexer);
+
+			Program program = parser.ParseProgram();
+
+			Assert.IsTrue(parser.Errors.Count == 0);
+			Assert.IsTrue(program.Statements.Count == 4);
+
+			Assert.IsTrue(((Boolean)((ExpressionStatement)(program.Statements[0])).Expression).Value == true);
+			Assert.IsTrue(((Boolean)((ExpressionStatement)(program.Statements[1])).Expression).Value == false);
+			Assert.IsTrue(((Identifier)((ExpressionStatement)(program.Statements[2])).Expression).Value == "TRUE");
+			Assert.IsTrue(((Identifier)((ExpressionStatement)(program.Statements[3])).Expression).Value == "FALSE");
+		}
+
+		[TestMethod]
+		public void TestGroupedExpressions()
+		{
+			string input = "(1 + 2) * 3;";
+			Lexer lexer = new Lexer(input);
+			Parser parser = new Parser(lexer);
+
+			Program program = parser.ParseProgram();
+
+			Assert.IsTrue(parser.Errors.Count == 0);
+			Assert.IsTrue(program.Statements.Count == 1);
+
+			Assert.IsTrue(((InfixExpression)((ExpressionStatement)(program.Statements[0])).Expression).Operator == "*");
+			Assert.IsTrue(((InfixExpression)((InfixExpression)((ExpressionStatement)(program.Statements[0])).Expression).LeftExpression).Operator == "+");
+		}
+
+		[TestMethod]
+		public void TestIfExpressions()
+		{
+			string input = "if (a > 0) { return a; }; if (b < 0) { } else { return b; };";
+			Lexer lexer = new Lexer(input);
+			Parser parser = new Parser(lexer);
+
+			Program program = parser.ParseProgram();
+
+			Assert.IsTrue(parser.Errors.Count == 0);
+			Assert.IsTrue(program.Statements.Count == 2);
+
+			Assert.IsTrue(((InfixExpression)((IfExpression)((ExpressionStatement)(program.Statements[0])).Expression).Condition).Operator == ">");
+			Assert.IsTrue(((IfExpression)((ExpressionStatement)(program.Statements[0])).Expression).Consequence.Statements.Count == 1);
+			Assert.IsTrue(((IfExpression)((ExpressionStatement)(program.Statements[0])).Expression).Alternative == null);
+
+			Assert.IsTrue(((InfixExpression)((IfExpression)((ExpressionStatement)(program.Statements[1])).Expression).Condition).Operator == "<");
+			Assert.IsTrue(((IfExpression)((ExpressionStatement)(program.Statements[1])).Expression).Consequence.Statements.Count == 0);
+			Assert.IsTrue(((IfExpression)((ExpressionStatement)(program.Statements[1])).Expression).Alternative.Statements.Count == 1);
+		}
+
+		[TestMethod]
+		public void TestFunctionLiterals()
+		{
+			string input = "fn (a, b) { a + b; };";
+			Lexer lexer = new Lexer(input);
+			Parser parser = new Parser(lexer);
+
+			Program program = parser.ParseProgram();
+
+			Assert.IsTrue(parser.Errors.Count == 0);
+			Assert.IsTrue(program.Statements.Count == 1);
+
+			Assert.IsTrue(((FunctionLiteral)((ExpressionStatement)(program.Statements[0])).Expression).Parameters.Count == 2);
+			Assert.IsTrue(((FunctionLiteral)((ExpressionStatement)(program.Statements[0])).Expression).Body.Statements.Count == 1);
+		}
+
+		[TestMethod]
+		public void TestCallExpressions()
+		{
+			string input = "add(1, 2); foo(3, bar(4, 5));";
+			Lexer lexer = new Lexer(input);
+			Parser parser = new Parser(lexer);
+
+			Program program = parser.ParseProgram();
+
+			Assert.IsTrue(parser.Errors.Count == 0);
+			Assert.IsTrue(program.Statements.Count == 2);
+
+			Assert.IsTrue(((Identifier)((CallExpression)((ExpressionStatement)(program.Statements[0])).Expression).Function).Value == "add");
+			Assert.IsTrue(((CallExpression)((ExpressionStatement)(program.Statements[0])).Expression).Arguments.Count == 2);
+
+			Assert.IsTrue(((Identifier)((CallExpression)((ExpressionStatement)(program.Statements[1])).Expression).Function).Value == "foo");
+			Assert.IsTrue(((CallExpression)((ExpressionStatement)(program.Statements[1])).Expression).Arguments.Count == 2);
+			Assert.IsTrue(((Identifier)((CallExpression)((CallExpression)((ExpressionStatement)(program.Statements[1])).Expression).Arguments[1]).Function).Value == "bar");
 		}
 	}
 }

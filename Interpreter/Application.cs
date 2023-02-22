@@ -6,12 +6,7 @@ namespace Interpreter
 	{
 		public static int Main(String[] args)
 		{
-			string text = "let mult = fn(a, b) { a * b };" +
-			              "let twice = fn(x) { let factor = 2; return mult(x, factor); };" +
-			              "let two = twice(1);" +
-			              "let three = 3;" +
-			              "if (two < tree) { true } else { false };" +
-			              "(a + b) * c";
+			string text = "add(1, 2); add(3, add(4, 5));";
 
 			/*
 			string input = "= == ! != + - < > * /";
