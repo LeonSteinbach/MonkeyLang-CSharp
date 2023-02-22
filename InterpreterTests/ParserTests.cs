@@ -1,6 +1,4 @@
-﻿using Boolean = Interpreter.Boolean;
-
-namespace InterpreterTests
+﻿namespace InterpreterTests
 {
 	[TestClass]
 	public class ParserTests
@@ -153,8 +151,8 @@ namespace InterpreterTests
 			Assert.IsTrue(parser.Errors.Count == 0);
 			Assert.IsTrue(program.Statements.Count == 2);
 
-			Assert.IsTrue(((BooleanLiteral)((ExpressionStatement)(program.Statements[0])).Expression).Value == true);
-			Assert.IsTrue(((BooleanLiteral)((ExpressionStatement)(program.Statements[1])).Expression).Value == false);
+			Assert.IsTrue(((BooleanLiteral)((ExpressionStatement)(program.Statements[0])).Expression).Value);
+			Assert.IsFalse(((BooleanLiteral)((ExpressionStatement)(program.Statements[1])).Expression).Value);
 		}
 
 		[TestMethod]
