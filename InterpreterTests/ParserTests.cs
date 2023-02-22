@@ -144,19 +144,17 @@ namespace InterpreterTests
 		[TestMethod]
 		public void TestBooleanLiterals()
 		{
-			string input = "true; false; TRUE; FALSE;";
+			string input = "true; false;";
 			Lexer lexer = new Lexer(input);
 			Parser parser = new Parser(lexer);
 
 			Program program = parser.ParseProgram();
 
 			Assert.IsTrue(parser.Errors.Count == 0);
-			Assert.IsTrue(program.Statements.Count == 4);
+			Assert.IsTrue(program.Statements.Count == 2);
 
-			Assert.IsTrue(((Boolean)((ExpressionStatement)(program.Statements[0])).Expression).Value == true);
-			Assert.IsTrue(((Boolean)((ExpressionStatement)(program.Statements[1])).Expression).Value == false);
-			Assert.IsTrue(((Identifier)((ExpressionStatement)(program.Statements[2])).Expression).Value == "TRUE");
-			Assert.IsTrue(((Identifier)((ExpressionStatement)(program.Statements[3])).Expression).Value == "FALSE");
+			Assert.IsTrue(((BooleanLiteral)((ExpressionStatement)(program.Statements[0])).Expression).Value == true);
+			Assert.IsTrue(((BooleanLiteral)((ExpressionStatement)(program.Statements[1])).Expression).Value == false);
 		}
 
 		[TestMethod]

@@ -6,10 +6,7 @@ namespace Interpreter
 	{
 		public static int Main(String[] args)
 		{
-			string text = "let a = 5;" +
-			              "let b = a > 3;" +
-			              "let c = a * 5;" +
-			              "if (b == !!true) { c; } else { a * 3 }";
+			string text = "true; false; TRUE; FALSE;";
 
 			/*
 			string input = "= == ! != + - < > * /";
