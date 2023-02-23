@@ -1,8 +1,4 @@
-﻿using Environment = Interpreter.Environment;
-using Object = Interpreter.Object;
-using Boolean = Interpreter.Boolean;
-
-namespace InterpreterTests
+﻿namespace InterpreterTests
 {
 	[TestClass]
 	public class EvaluatorTests
@@ -129,6 +125,10 @@ namespace InterpreterTests
 			string input4 = "let gettwo = fn() { 1; return 2; 3; }; gettwo();";
 			Object result4 = Evaluator.Evaluate(new Parser(new Lexer(input4)).ParseProgram(), new Environment());
 			Assert.IsTrue(((Integer)result4).Value == 2);
+
+			string input5 = "let bar = 1; let foo = fn(x) { let bar = 2; bar + x; }; foo(bar);";
+			Object result5 = Evaluator.Evaluate(new Parser(new Lexer(input5)).ParseProgram(), new Environment());
+			Assert.IsTrue(((Integer)result5).Value == 3);
 		}
 	}
 }
