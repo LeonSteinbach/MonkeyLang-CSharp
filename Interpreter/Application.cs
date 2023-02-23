@@ -6,13 +6,7 @@ namespace Interpreter
 	{
 		public static int Main(String[] args)
 		{
-			string text = "let fib = fn(n) {" +
-			              "    if (n < 2) {" +
-			              "        return n;" +
-			              "    }" +
-			              "    fib (n - 1) + fib(n - 2)" +
-			              "};" +
-			              "fib(35);";
+			string text = "let fib = fn(n) { if (n < 2) { return n }; fib(n-1) + fib(n-2); }; fib(1);";
 
 			/*
 			string input = "= == ! != + - < > * /";
