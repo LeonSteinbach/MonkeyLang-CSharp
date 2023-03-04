@@ -9,7 +9,10 @@
 		RETURN,
 		ERROR,
 		FUNCTION,
+		BUILTIN
 	}
+
+	public delegate Object BuiltinFunction(params Object[] args);
 
 	public interface Object
 	{
@@ -120,6 +123,21 @@
 		public ObjectType Type()
 		{
 			return ObjectType.FUNCTION;
+		}
+	}
+
+	public class Builtin : Object
+	{
+		public BuiltinFunction Function { get; set; }
+
+		public override string ToString()
+		{
+			return "builtin function";
+		}
+
+		public ObjectType Type()
+		{
+			return ObjectType.BUILTIN;
 		}
 	}
 }

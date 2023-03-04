@@ -2,9 +2,9 @@
 {
 	public class Evaluator
 	{
-		private static readonly Boolean TRUE = new() { Value = true };
-		private static readonly Boolean FALSE = new() { Value = false };
-		private static readonly Null NULL = new();
+		public static readonly Boolean TRUE = new() { Value = true };
+		public static readonly Boolean FALSE = new() { Value = false };
+		public static readonly Null NULL = new();
 
 		public static Object Evaluate(Node? node, Environment environment)
 		{
@@ -179,9 +179,13 @@
 		private static Object EvaluateIdentifier(Identifier identifier, Environment environment)
 		{
 			Tuple<Object?, bool> result = environment.Get(identifier.Value);
-			return result.Item2 == false ?
-				new Error { Message = $"identifier not found: {identifier.Value}" } :
-				result.Item1 ?? NULL;
+			if (result.Item2)
+				return result.Item1 ?? NULL;
+			bool foundBuiltin = Builtins.builtins.TryGetValue(identifier.Value, out Builtin? builtin);
+			if (foundBuiltin && builtin != null)
+				return builtin;
+
+			return new Error {Message = $"identifier not found: {identifier.Value}"};
 		}
 
 		private static List<Object> EvaluateExpressions(List<Expression?>? expressions, Environment environment)
@@ -201,12 +205,17 @@
 
 		private static Object ApplyFunction(Object function, List<Object> arguments)
 		{
-			if (function.Type() != ObjectType.FUNCTION)
-				return new Error { Message = $"not a function: {function.Type()}" };
-
-			Environment extendedEnvironment = ExtendFunctionEnvironment((Function)function, arguments);
-			Object evaluated = Evaluate(((Function) function).Body, extendedEnvironment);
-			return UnwrapReturnValue(evaluated);
+			switch (function.Type())
+			{
+				case ObjectType.FUNCTION:
+					Environment extendedEnvironment = ExtendFunctionEnvironment((Function)function, arguments);
+					Object evaluated = Evaluate(((Function)function).Body, extendedEnvironment);
+					return UnwrapReturnValue(evaluated);
+				case ObjectType.BUILTIN:
+					return ((Builtin) function).Function(arguments.ToArray());
+				default:
+					return new Error { Message = $"not a function: {function.Type()}" };
+			}
 		}
 
 		private static Environment ExtendFunctionEnvironment(Function function, List<Object> arguments)

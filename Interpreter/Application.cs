@@ -6,7 +6,7 @@ namespace Interpreter
 	{
 		public static void Main(string[] args)
 		{
-			string text = "let foo = \"hallo\"; foo + \" \" + \"welt!\";";
+			string text = "len(\"hello world\");";
 
 			/*
 			string input = "= == ! != + - < > * /";
@@ -26,7 +26,7 @@ namespace Interpreter
 			Parser parser = new Parser(lexer);
 			Environment environment = new Environment();
 
-			Program? program = parser.ParseProgram();
+			Program program = parser.ParseProgram();
 
 			Console.WriteLine();
 			Parser.PrintProgram(program);
