@@ -7,6 +7,7 @@
 
 		IDENT,
 		INT,
+		STRING,
 
 		ASSIGN,
 		PLUS,
@@ -25,6 +26,8 @@
 		RPAREN,
 		LBRACE,
 		RBRACE,
+		LBRACKET,
+		RBRACKET,
 
 		TRUE,
 		FALSE,
@@ -39,8 +42,6 @@
 
 		FUNCTION,
 		LET,
-
-		STRING
 	}
 
 	public class Token

@@ -9,7 +9,8 @@
 		RETURN,
 		ERROR,
 		FUNCTION,
-		BUILTIN
+		BUILTIN,
+		ARRAY
 	}
 
 	public delegate Object BuiltinFunction(params Object[] args);
@@ -138,6 +139,22 @@
 		public ObjectType Type()
 		{
 			return ObjectType.BUILTIN;
+		}
+	}
+
+	public class Array : Object
+	{
+		public List<Object> Elements { get; set; }
+
+		public override string ToString()
+		{
+			string elementsString = string.Join(", ", Elements);
+			return $"[{elementsString}]";
+		}
+
+		public ObjectType Type()
+		{
+			return ObjectType.ARRAY;
 		}
 	}
 }

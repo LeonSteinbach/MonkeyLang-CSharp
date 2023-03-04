@@ -6,7 +6,7 @@ namespace Interpreter
 	{
 		public static void Main(string[] args)
 		{
-			string text = "len(\"hello world\");";
+			string text = "let a = [1, 2, 3]; first(a) + last(a) + rest(a)[0]; let b = [1, 2, 3]; push(b, 4); b;";
 
 			/*
 			string input = "= == ! != + - < > * /";

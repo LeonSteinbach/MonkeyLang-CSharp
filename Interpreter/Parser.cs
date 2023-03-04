@@ -34,6 +34,7 @@
 				{TokenType.SLASH, Precedence.PRODUCT},
 				{TokenType.ASTERIX, Precedence.PRODUCT},
 				{TokenType.LPAREN, Precedence.CALL},
+				{TokenType.LBRACKET, Precedence.INDEX},
 			};
 
 			RegisterParseFunctions();
@@ -53,9 +54,10 @@
 			RegisterPrefix(TokenType.LPAREN, ParseGroupedExpression);
 			RegisterPrefix(TokenType.IF, ParseIfExpression);
 			RegisterPrefix(TokenType.FUNCTION, ParseFunctionLiteral);
+			RegisterPrefix(TokenType.LBRACKET, ParseArrayLiteral);
 
+			RegisterInfix(TokenType.LBRACKET, ParseIndexExpression);
 			RegisterInfix(TokenType.LPAREN, ParseCallExpression);
-
 			RegisterInfix(TokenType.PLUS, ParseInfixExpression);
 			RegisterInfix(TokenType.MINUS, ParseInfixExpression);
 			RegisterInfix(TokenType.SLASH, ParseInfixExpression);
@@ -310,32 +312,45 @@
 			return ExpectPeek(TokenType.RPAREN) == false ? null : parameters;
 		}
 
-		private Expression ParseCallExpression(Expression function)
+		private Expression ParseArrayLiteral()
 		{
-			return new CallExpression { Token = CurrentToken, Function = function, Arguments = ParseCallArguments() };
+			return new ArrayLiteral { Token = CurrentToken, Elements = ParseExpressionList(TokenType.RBRACKET) };
 		}
 
-		private List<Expression?>? ParseCallArguments()
+		private List<Expression?>? ParseExpressionList(TokenType end)
 		{
-			List<Expression?> arguments = new List<Expression?>();
+			List<Expression?> list = new();
 
-			if (PeekToken.Type == TokenType.RPAREN)
+			if (PeekToken.Type == end)
 			{
 				AdvanceTokens();
-				return arguments;
+				return list;
 			}
 
 			AdvanceTokens();
-			arguments.Add(ParseExpression(Precedence.LOWEST));
+			list.Add(ParseExpression(Precedence.LOWEST));
 
 			while (PeekToken.Type == TokenType.COMMA)
 			{
 				AdvanceTokens();
 				AdvanceTokens();
-				arguments.Add(ParseExpression(Precedence.LOWEST));
+				list.Add(ParseExpression(Precedence.LOWEST));
 			}
 
-			return ExpectPeek(TokenType.RPAREN) == false ? null : arguments;
+			return ExpectPeek(end) == false ? null : list;
+		}
+
+		private Expression? ParseIndexExpression(Expression left)
+		{
+			IndexExpression indexExpression = new IndexExpression { Token = CurrentToken, Left = left };
+			AdvanceTokens();
+			indexExpression.Index = ParseExpression(Precedence.LOWEST);
+			return ExpectPeek(TokenType.RBRACKET) == false ? null : indexExpression;
+		}
+
+		private Expression ParseCallExpression(Expression function)
+		{
+			return new CallExpression { Token = CurrentToken, Function = function, Arguments = ParseExpressionList(TokenType.RPAREN) };
 		}
 
 		private BlockStatement ParseBlockStatement()
@@ -416,6 +431,7 @@
 		SUM,
 		PRODUCT,
 		PREFIX,
-		CALL
+		CALL,
+		INDEX
 	}
 }

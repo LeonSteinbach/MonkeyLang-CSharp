@@ -31,8 +31,6 @@
 		{
 			SkipWhitespace();
 
-			byte nextCharacter = PeekCharacter();
-
 			Token token = currentCharacter switch
 			{
 				(byte) '=' => ProcessDoubleCharacterToken(TokenType.EQ, TokenType.ASSIGN, '='),
@@ -49,6 +47,8 @@
 				(byte) ',' => new Token(TokenType.COMMA, ((char) currentCharacter).ToString()),
 				(byte) '{' => new Token(TokenType.LBRACE, ((char) currentCharacter).ToString()),
 				(byte) '}' => new Token(TokenType.RBRACE, ((char) currentCharacter).ToString()),
+				(byte) '[' => new Token(TokenType.LBRACKET, ((char)currentCharacter).ToString()),
+				(byte) ']' => new Token(TokenType.RBRACKET, ((char)currentCharacter).ToString()),
 				(byte) '"' => new Token(TokenType.STRING, ReadString()),
 				0 => new Token(TokenType.EOF, string.Empty),
 				_ => GetIdentifier()

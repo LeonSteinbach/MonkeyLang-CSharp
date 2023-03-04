@@ -48,6 +48,19 @@
 					return EvaluateIdentifier(identifier, environment);
 				case FunctionLiteral functionLiteral:
 					return new Function { Parameters = functionLiteral.Parameters, Body = functionLiteral.Body, Environment = environment };
+				case ArrayLiteral arrayLiteral:
+					List<Object> elements = EvaluateExpressions(arrayLiteral.Elements, environment);
+					if (elements.Count == 1 && IsError(elements[0]))
+						return elements[0];
+					return new Array { Elements = elements };
+				case IndexExpression indexExpression:
+					Object left = Evaluate(indexExpression.Left, environment);
+					if (IsError(left))
+						return left;
+					Object index = Evaluate(indexExpression.Index, environment);
+					if (IsError(index))
+						return index;
+					return EvaluateIndexExpression((Array)left, index);
 				case CallExpression callExpression:
 					Object callFunction = Evaluate(callExpression.Function, environment);
 					if (IsError(callFunction))
@@ -186,6 +199,13 @@
 				return builtin;
 
 			return new Error {Message = $"identifier not found: {identifier.Value}"};
+		}
+
+		private static Object EvaluateIndexExpression(Array array, Object index)
+		{
+			int idx = ((Integer) index).Value;
+			int max = array.Elements.Count - 1;
+			return idx < 0 || idx > max ? NULL : array.Elements[idx];
 		}
 
 		private static List<Object> EvaluateExpressions(List<Expression?>? expressions, Environment environment)
