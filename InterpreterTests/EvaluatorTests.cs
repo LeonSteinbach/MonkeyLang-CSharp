@@ -20,6 +20,14 @@
 		}
 
 		[TestMethod]
+		public void TestStrings()
+		{
+			string input1 = "let foo = \"hallo\"; foo + \" \" + \"welt!\";";
+			Object result1 = Evaluator.Evaluate(new Parser(new Lexer(input1)).ParseProgram(), new Environment());
+			Assert.IsTrue(((String)result1).Value == "hallo welt!");
+		}
+
+		[TestMethod]
 		public void TestBooleans()
 		{
 			string input1 = "true;";

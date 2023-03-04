@@ -2,9 +2,9 @@
 {
 	public class Evaluator
 	{
-		private static Boolean TRUE = new() { Value = true };
-		private static Boolean FALSE = new() { Value = false };
-		private static Null NULL = new();
+		private static readonly Boolean TRUE = new() { Value = true };
+		private static readonly Boolean FALSE = new() { Value = false };
+		private static readonly Null NULL = new();
 
 		public static Object Evaluate(Node? node, Environment environment)
 		{
@@ -16,6 +16,8 @@
 					return Evaluate(expressionStatement.Expression, environment);
 				case IntegerLiteral integerLiteral:
 					return new Integer { Value = integerLiteral.Value };
+				case StringLiteral stringLiteral:
+					return new String { Value = stringLiteral.Value };
 				case BooleanLiteral booleanLiteral:
 					return booleanLiteral.Value ? TRUE : FALSE;
 				case PrefixExpression prefixExpression:
@@ -126,6 +128,8 @@
 				true when leftExpression.Type() != rightExpression.Type() => new Error { Message = $"type mismatch: {leftExpression.Type()} {opr} {rightExpression.Type()}" },
 				true when leftExpression.Type() == ObjectType.INTEGER && rightExpression.Type() == ObjectType.INTEGER =>
 					EvaluateIntegerInfixExpression(opr, leftExpression, rightExpression),
+				true when leftExpression.Type() == ObjectType.STRING && rightExpression.Type() == ObjectType.STRING =>
+					EvaluateStringInfixExpression(opr, leftExpression, rightExpression),
 				true when opr == "==" => ((Boolean) leftExpression).Value == ((Boolean) rightExpression).Value ? TRUE : FALSE,
 				true when opr == "!=" => ((Boolean) leftExpression).Value != ((Boolean) rightExpression).Value ? TRUE : FALSE,
 				_ => new Error { Message = $"unknown operator: {leftExpression.Type()} {opr} {rightExpression.Type()}" }
@@ -149,6 +153,16 @@
 				"!=" => left != right ? TRUE : FALSE,
 				_ => new Error { Message = $"unknown operator: {leftExpression.Type()} {opr} {rightExpression.Type()}" }
 			};
+		}
+
+		private static Object EvaluateStringInfixExpression(string opr, Object leftExpression, Object rightExpression)
+		{
+			if (opr != "+")
+				return new Error { Message = $"unknown operator: {leftExpression.Type()} {opr} {rightExpression.Type()}" };
+
+			string left = ((String)leftExpression).Value;
+			string right = ((String)rightExpression).Value;
+			return new String { Value = left + right };
 		}
 
 		private static Object EvaluateIfExpression(IfExpression ifExpression, Environment environment)

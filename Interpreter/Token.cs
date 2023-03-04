@@ -38,7 +38,9 @@
 		NEQ,
 
 		FUNCTION,
-		LET
+		LET,
+
+		STRING
 	}
 
 	public class Token

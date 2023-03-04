@@ -49,6 +49,7 @@
 				(byte) ',' => new Token(TokenType.COMMA, ((char) currentCharacter).ToString()),
 				(byte) '{' => new Token(TokenType.LBRACE, ((char) currentCharacter).ToString()),
 				(byte) '}' => new Token(TokenType.RBRACE, ((char) currentCharacter).ToString()),
+				(byte) '"' => new Token(TokenType.STRING, ReadString()),
 				0 => new Token(TokenType.EOF, string.Empty),
 				_ => GetIdentifier()
 			};
@@ -56,6 +57,17 @@
 			ReadCharacter();
 
 			return token;
+		}
+
+		private string ReadString()
+		{
+			int oldPosition = position + 1;
+			do
+			{
+				ReadCharacter();
+			} while (currentCharacter != '"' && currentCharacter != 0);
+
+			return input.Substring(oldPosition, position - oldPosition);
 		}
 
 		private Token GetIdentifier()

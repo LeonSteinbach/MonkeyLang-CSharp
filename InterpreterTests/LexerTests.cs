@@ -53,7 +53,7 @@ namespace InterpreterTests
 		[TestMethod]
 		public void TestSignleCharacterTokens()
 		{
-			string input = ";(){},";
+			string input = ";(){},\"\"";
 			List<Token> targets = new List<Token>
 			{
 				new(TokenType.SEMICOLON, ";"),
@@ -62,6 +62,7 @@ namespace InterpreterTests
 				new(TokenType.LBRACE, "{"),
 				new(TokenType.RBRACE, "}"),
 				new(TokenType.COMMA, ","),
+				new(TokenType.STRING, ""),
 				new(TokenType.EOF, ""),
 			};
 			List<Token> results = new List<Token>();

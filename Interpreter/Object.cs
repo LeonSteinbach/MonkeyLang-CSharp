@@ -3,6 +3,7 @@
 	public enum ObjectType
 	{
 		INTEGER,
+		STRING,
 		BOOLEAN,
 		NULL,
 		RETURN,
@@ -28,6 +29,21 @@
 		public ObjectType Type()
 		{
 			return ObjectType.INTEGER;
+		}
+	}
+
+	public class String : Object
+	{
+		public string Value { get; set; }
+
+		public override string ToString()
+		{
+			return Value;
+		}
+
+		public ObjectType Type()
+		{
+			return ObjectType.STRING;
 		}
 	}
 

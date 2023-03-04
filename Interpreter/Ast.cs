@@ -82,6 +82,29 @@
 		}
 	}
 
+	public class StringLiteral : Expression
+	{
+		public Token Token { get; set; }
+		public string Value { get; set; }
+
+		public string TokenLiteral()
+		{
+			return Token.Literal;
+		}
+
+		public string String(int level, bool nextTokenExists)
+		{
+			string result = string.Empty;
+
+			result += Util.GetIndentedNodeString(GetType().Name + ": {", level);
+			result += Util.GetIndentedNodeString("type: " + Token.Type + ",", level + 1);
+			result += Util.GetIndentedNodeString("value: " + Value, level + 1);
+			result += Util.GetIndentedNodeString(nextTokenExists ? "}," : "}", level);
+
+			return result;
+		}
+	}
+
 	public class BooleanLiteral : Expression
 	{
 		public Token Token { get; set; }

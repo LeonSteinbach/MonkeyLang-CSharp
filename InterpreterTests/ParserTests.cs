@@ -91,6 +91,24 @@
 		}
 
 		[TestMethod]
+		public void TestStringLiterals()
+		{
+			string input = "\"\"; \"hallo\";";
+			Lexer lexer = new Lexer(input);
+			Parser parser = new Parser(lexer);
+
+			Program? program = parser.ParseProgram();
+
+			Assert.IsTrue(parser.Errors.Count == 0);
+			Assert.IsTrue(program.Statements.Count == 2);
+
+			Assert.IsTrue(((StringLiteral)((ExpressionStatement)program.Statements[0]).Expression).Token.Type == TokenType.STRING);
+			Assert.IsTrue(((StringLiteral)((ExpressionStatement)program.Statements[0]).Expression).Value == "");
+			Assert.IsTrue(((StringLiteral)((ExpressionStatement)program.Statements[1]).Expression).Token.Type == TokenType.STRING);
+			Assert.IsTrue(((StringLiteral)((ExpressionStatement)program.Statements[1]).Expression).Value == "hallo");
+		}
+
+		[TestMethod]
 		public void TestPrefixOperators()
 		{
 			string input = "!a; !1; !foo(); !!a; -a; -0; -foo(); --a;";

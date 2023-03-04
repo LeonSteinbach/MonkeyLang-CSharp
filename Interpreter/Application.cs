@@ -2,11 +2,11 @@
 
 namespace Interpreter
 {
-	class Application
+	public class Application
 	{
-		public static int Main(String[] args)
+		public static void Main(string[] args)
 		{
-			string text = "let fib = fn(n) { if (n < 2) { return n }; fib(n-1) + fib(n-2); }; fib(1);";
+			string text = "let foo = \"hallo\"; foo + \" \" + \"welt!\";";
 
 			/*
 			string input = "= == ! != + - < > * /";
@@ -42,8 +42,6 @@ namespace Interpreter
 			Console.WriteLine("Elapsed milliseconds: " + elapsedMilliseconds);
 
 			Console.ReadKey();
-
-			return 0;
 		}
 	}
 }

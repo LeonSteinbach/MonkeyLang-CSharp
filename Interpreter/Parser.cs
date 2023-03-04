@@ -45,6 +45,7 @@
 		{
 			RegisterPrefix(TokenType.IDENT, ParseIdentifier);
 			RegisterPrefix(TokenType.INT, ParseIntegerLiteral);
+			RegisterPrefix(TokenType.STRING, ParseStringLiteral);
 			RegisterPrefix(TokenType.TRUE, ParseBoolean);
 			RegisterPrefix(TokenType.FALSE, ParseBoolean);
 			RegisterPrefix(TokenType.BANG, ParsePrefixExpression);
@@ -201,12 +202,12 @@
 			return leftExpression;
 		}
 
-		private Expression ParseIdentifier()
+		private Identifier ParseIdentifier()
 		{
 			return new Identifier { Token = CurrentToken, Value = CurrentToken.Literal };
 		}
 
-		private Expression? ParseIntegerLiteral()
+		private IntegerLiteral? ParseIntegerLiteral()
 		{
 			IntegerLiteral integerLiteral = new IntegerLiteral { Token = CurrentToken };
 			bool error = int.TryParse(CurrentToken.Literal, out int value);
@@ -218,6 +219,11 @@
 
 			integerLiteral.Value = value;
 			return integerLiteral;
+		}
+
+		private StringLiteral ParseStringLiteral()
+		{
+			return new StringLiteral { Token = CurrentToken, Value = CurrentToken.Literal };
 		}
 
 		private BooleanLiteral ParseBoolean()
