@@ -6,27 +6,27 @@ namespace Interpreter
 	{
 		public static void Main(string[] args)
 		{
-			string text = "let a = [1, 2, 3]; first(a) + last(a) + rest(a)[0]; let b = [1, 2, 3]; push(b, 4); b;";
+			string text = "let fib = fn(n) { if (n < 2) { return n; }; fib(n-1) + fib(n-2); }; fib(30);";
 
-			/*
-			string input = "= == ! != + - < > * /";
-
-			Lexer lexer = new Lexer(input);
-
+			Lexer lexer = new Lexer(text);
 			Token token;
+			Stopwatch stopwatch = Stopwatch.StartNew();
 			do
 			{
 				token = lexer.NextToken();
 				Console.WriteLine(token);
 			} while (token.Type != TokenType.EOF);
-			*/
 
-			Stopwatch stopwatch = Stopwatch.StartNew();
+			Console.WriteLine("Lexer [ms]: " + (int) stopwatch.Elapsed.TotalMilliseconds);
+
+			/*
+			Stopwatch stopwatch1 = Stopwatch.StartNew();
 			Lexer lexer = new Lexer(text);
 			Parser parser = new Parser(lexer);
 			Environment environment = new Environment();
 
 			Program program = parser.ParseProgram();
+			stopwatch1.Stop();
 
 			Console.WriteLine();
 			Parser.PrintProgram(program);
@@ -36,11 +36,14 @@ namespace Interpreter
 				Console.WriteLine(error);
 
 			Console.WriteLine();
+			Stopwatch stopwatch2 = Stopwatch.StartNew();
 			Console.WriteLine(Evaluator.Evaluate(program, environment));
-			int elapsedMilliseconds = (int)stopwatch.Elapsed.TotalMilliseconds;
-			Console.WriteLine();
-			Console.WriteLine("Elapsed milliseconds: " + elapsedMilliseconds);
+			stopwatch2.Stop();
 
+			Console.WriteLine();
+			Console.WriteLine("Lexer + Parser [ms]: " + (int)stopwatch1.Elapsed.TotalMilliseconds);
+			Console.WriteLine("Evaluator [ms]:      " + (int)stopwatch2.Elapsed.TotalMilliseconds);
+			*/
 			Console.ReadKey();
 		}
 	}

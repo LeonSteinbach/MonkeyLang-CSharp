@@ -20,6 +20,7 @@
 		GT,
 
 		COMMA,
+		COLON,
 		SEMICOLON,
 
 		LPAREN,

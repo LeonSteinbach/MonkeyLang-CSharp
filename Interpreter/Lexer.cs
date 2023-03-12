@@ -42,6 +42,7 @@
 				(byte) '<' => new Token(TokenType.LT, ((char)currentCharacter).ToString()),
 				(byte) '>' => new Token(TokenType.GT, ((char)currentCharacter).ToString()),
 				(byte) ';' => new Token(TokenType.SEMICOLON, ((char) currentCharacter).ToString()),
+				(byte) ':' => new Token(TokenType.COLON, ((char)currentCharacter).ToString()),
 				(byte) '(' => new Token(TokenType.LPAREN, ((char) currentCharacter).ToString()),
 				(byte) ')' => new Token(TokenType.RPAREN, ((char) currentCharacter).ToString()),
 				(byte) ',' => new Token(TokenType.COMMA, ((char) currentCharacter).ToString()),

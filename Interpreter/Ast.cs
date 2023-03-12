@@ -279,6 +279,34 @@
 		}
 	}
 
+	public class HashLiteral : Expression
+	{
+		public Token Token { get; set; }
+		public Dictionary<Expression, Expression> Pairs { get; set; }
+
+		public string TokenLiteral()
+		{
+			return Token.Literal;
+		}
+
+		public string String(int level, bool nextTokenExists)
+		{
+			string result = string.Empty;
+
+			result += Util.GetIndentedNodeString(GetType().Name + ": {", level);
+			result += Util.GetIndentedNodeString("type: " + Token.Type + ",", level + 1);
+			result += Util.GetIndentedNodeString("pairs: {", level + 1);
+			foreach (Expression key in Pairs.Keys)
+			{
+				result += Pairs[key].String(level + 2, nextTokenExists);
+			}
+			result += Util.GetIndentedNodeString("}", level + 1);
+			result += Util.GetIndentedNodeString(nextTokenExists ? "}," : "}", level);
+
+			return result;
+		}
+	}
+
 	public class IndexExpression : Expression
 	{
 		public Token Token { get; set; }
