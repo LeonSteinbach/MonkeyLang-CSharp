@@ -98,15 +98,13 @@ namespace InterpreterTests
 		[TestMethod]
 		public void TestIllegalCharacterTokens()
 		{
-			string input = "#$%&[]";
+			string input = "#$%&";
 			List<Token> targets = new List<Token>
 			{
 				new(TokenType.ILLEGAL, "#"),
 				new(TokenType.ILLEGAL, "$"),
 				new(TokenType.ILLEGAL, "%"),
 				new(TokenType.ILLEGAL, "&"),
-				new(TokenType.ILLEGAL, "["),
-				new(TokenType.ILLEGAL, "]"),
 				new(TokenType.EOF, ""),
 			};
 			List<Token> results = new List<Token>();
